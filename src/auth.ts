@@ -1,3 +1,5 @@
+export const runtime = "edge";
+
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 
