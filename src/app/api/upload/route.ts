@@ -9,16 +9,7 @@ export const config = {
 };
 
 import { NextRequest, NextResponse } from "next/server";
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-
-const S3 = new S3Client({
-    region: "auto",
-    endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
-    credentials: {
-        accessKeyId: process.env.R2_ACCESS_KEY_ID || "",
-        secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || "",
-    },
-});
+import { AwsClient } from "aws4fetch";
 
 export async function POST(request: NextRequest) {
     try {
@@ -29,20 +20,37 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: "No file received." }, { status: 400 });
         }
 
-        const buffer = Buffer.from(await file.arrayBuffer());
+        const buffer = await file.arrayBuffer();
+
         // Create a unique clean filename
         const fileName = `${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
 
-        console.log("Target Bucket:", process.env.R2_BUCKET_NAME);
+        const bucket = process.env.R2_BUCKET_NAME || "shotbyhamadi-media";
+        const accountId = process.env.R2_ACCOUNT_ID;
+        const endpoint = `https://${accountId}.r2.cloudflarestorage.com/${bucket}/${fileName}`;
 
-        await S3.send(
-            new PutObjectCommand({
-                Bucket: process.env.R2_BUCKET_NAME || "shotbyhamadi-media",
-                Key: fileName,
-                Body: buffer,
-                ContentType: file.type || "application/octet-stream",
-            })
-        );
+        console.log("Target Bucket:", bucket);
+
+        // Uses lightweight aws4fetch instead of the bloated node-dependent AWS SDK
+        const aws = new AwsClient({
+            accessKeyId: process.env.R2_ACCESS_KEY_ID || "",
+            secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || "",
+            service: "s3",
+            region: "auto",
+        });
+
+        const uploadRes = await aws.fetch(endpoint, {
+            method: "PUT",
+            body: buffer,
+            headers: {
+                "Content-Type": file.type || "application/octet-stream",
+            }
+        });
+
+        if (!uploadRes.ok) {
+            const errText = await uploadRes.text();
+            throw new Error(`R2 Response (${uploadRes.status}): ${errText}`);
+        }
 
         return NextResponse.json({ success: true, fileName });
     } catch (error) {
