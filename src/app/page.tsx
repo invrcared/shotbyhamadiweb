@@ -26,6 +26,7 @@ export default function Home() {
   const [mediaList, setMediaList] = useState<MediaItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const [lightboxImage, setLightboxImage] = useState<MediaItem | null>(null);
 
   useEffect(() => {
     Promise.all([
@@ -116,7 +117,11 @@ export default function Home() {
               ) : (
                 <div className="columns-1 sm:columns-2 md:columns-3 gap-4 space-y-4 animate-fade-in">
                   {filteredImages.map((img) => (
-                    <div key={img.id} className="break-inside-avoid relative group overflow-hidden bg-[#27272A] mb-4 cursor-pointer">
+                    <div
+                      key={img.id}
+                      className="break-inside-avoid relative group overflow-hidden bg-[#27272A] mb-4 cursor-pointer"
+                      onClick={() => setLightboxImage(img)}
+                    >
                       <Image
                         src={img.url}
                         alt={img.alt_text || "Gallery Image"}
@@ -124,6 +129,8 @@ export default function Home() {
                         height={600} // Default fallback height ratio
                         className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105"
                         sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
+                        onContextMenu={(e) => e.preventDefault()}
+                        draggable={false}
                       />
                       <div className="absolute inset-0 bg-[#000000]/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                         <span className="text-[#A1A1AA] text-sm tracking-[0.3em] uppercase font-light translate-y-4 group-hover:translate-y-0 transition-all duration-300">
@@ -186,6 +193,36 @@ export default function Home() {
                   Instagram
                 </a>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Lightbox Modal */}
+      {lightboxImage && (
+        <div
+          className="fixed inset-0 z-[200] flex items-center justify-center bg-black/95 backdrop-blur-md p-4 animate-fade-in"
+          onClick={() => setLightboxImage(null)}
+          onContextMenu={(e) => e.preventDefault()}
+        >
+          <button
+            onClick={() => setLightboxImage(null)}
+            className="absolute top-6 right-6 text-zinc-500 hover:text-white transition-colors text-4xl font-light leading-none z-[210] mix-blend-difference"
+          >
+            &times;
+          </button>
+          <div className="relative max-w-7xl max-h-[90vh] w-full h-full flex items-center justify-center pointer-events-none">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={lightboxImage.url}
+              alt={lightboxImage.alt_text || "Enlarged Image"}
+              className="max-w-full max-h-[90vh] object-contain shadow-2xl pointer-events-auto select-none"
+              onContextMenu={(e) => e.preventDefault()}
+              draggable={false}
+            />
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/50 backdrop-blur-md px-6 py-2 text-[10px] tracking-widest uppercase text-white/50 pointer-events-none flex items-center gap-2 border border-white/10 rounded-full shadow-lg">
+              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.31-8.86c-1.77-.45-2.34-.94-2.34-1.67 0-.84.79-1.43 2.1-1.43 1.38 0 1.9.66 1.94 1.64h1.71c-.05-1.97-1.3-3.15-3.61-3.15-2.29 0-3.83 1.15-3.83 3.12 0 1.95 1.4 2.62 3.69 3.2 1.83.47 2.4 1.05 2.4 1.86 0 .97-.92 1.58-2.28 1.58-1.57 0-2.22-.84-2.28-1.93H7.95c.08 2.05 1.5 3.32 3.97 3.32 2.42 0 4.01-1.22 4.01-3.23.01-2.02-1.36-2.65-3.62-3.26z" /></svg>
+              &copy; {new Date().getFullYear()} ShotByHamadi
             </div>
           </div>
         </div>

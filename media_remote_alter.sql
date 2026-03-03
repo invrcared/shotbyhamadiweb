@@ -1,0 +1,2 @@
+ALTER TABLE Media ADD COLUMN category_id INTEGER;
+ALTER TABLE Media ADD COLUMN alt_text TEXT;

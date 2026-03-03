@@ -27,6 +27,7 @@ export default function AdminDashboard() {
     // Dynamic Data State
     const [categories, setCategories] = useState<Category[]>([]);
     const [mediaList, setMediaList] = useState<MediaItem[]>([]);
+    const [lightboxImage, setLightboxImage] = useState<MediaItem | null>(null);
     const [stats, setStats] = useState({ totalMedia: 0, activeProjects: 0, storageUsed: "0 GB" });
 
     // Forms & UI States
@@ -482,12 +483,14 @@ export default function AdminDashboard() {
                                     {mediaList.map((media) => {
                                         return (
                                             <div key={media.id} className="relative group border border-zinc-900 overflow-hidden bg-zinc-900/50">
+                                                {/* eslint-disable-next-line @next/next/no-img-element */}
                                                 <img
                                                     src={media.url}
                                                     alt={media.alt_text}
                                                     width={300}
                                                     height={300}
-                                                    className="w-full h-40 object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+                                                    className="w-full h-40 object-cover opacity-80 group-hover:opacity-100 transition-opacity cursor-pointer"
+                                                    onClick={() => setLightboxImage(media)}
                                                 />
                                                 <div className="absolute top-2 left-2 bg-black/80 px-2 py-1 text-[10px] text-white uppercase tracking-widest backdrop-blur-sm">
                                                     {media.category_name || "Uncategorized"}
@@ -928,6 +931,29 @@ export default function AdminDashboard() {
                     </div>
                 </main>
             </div>
+
+            {/* Lightbox Modal */}
+            {lightboxImage && (
+                <div
+                    className="fixed inset-0 z-[200] flex items-center justify-center bg-black/95 backdrop-blur-md p-4 animate-fade-in"
+                    onClick={() => setLightboxImage(null)}
+                >
+                    <button
+                        onClick={() => setLightboxImage(null)}
+                        className="absolute top-6 right-6 text-zinc-500 hover:text-white transition-colors text-4xl font-light leading-none z-[210] mix-blend-difference"
+                    >
+                        &times;
+                    </button>
+                    <div className="relative max-w-7xl max-h-[90vh] w-full h-full flex items-center justify-center pointer-events-none">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                            src={lightboxImage.url}
+                            alt={lightboxImage.alt_text || "Enlarged Image"}
+                            className="max-w-full max-h-[90vh] object-contain shadow-2xl pointer-events-auto"
+                        />
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

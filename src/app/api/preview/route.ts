@@ -1,17 +1,7 @@
 export const runtime = "edge";
 
 import { NextRequest, NextResponse } from "next/server";
-import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-
-const S3 = new S3Client({
-    region: "auto",
-    endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
-    credentials: {
-        accessKeyId: process.env.R2_ACCESS_KEY_ID || "",
-        secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || "",
-    },
-});
+import { AwsClient } from "aws4fetch";
 
 export async function GET(request: NextRequest) {
     try {
@@ -22,26 +12,33 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ error: "No key provided" }, { status: 400 });
         }
 
-        const command = new GetObjectCommand({
-            Bucket: process.env.R2_BUCKET_NAME || "shotbyhamadi-media",
-            Key: key,
+        const aws = new AwsClient({
+            accessKeyId: process.env.R2_ACCESS_KEY_ID || "",
+            secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || "",
+            service: "s3",
+            region: "auto",
         });
 
-        // 1. Fetch the object directly from S3 instead of sending a redirect URL
-        const response = await S3.send(command);
+        const bucket = process.env.R2_BUCKET_NAME || "shotbyhamadi-media";
+        const accountId = process.env.R2_ACCOUNT_ID;
+        const endpoint = `https://${accountId}.r2.cloudflarestorage.com/${bucket}/${key}`;
 
-        // 2. Convert the stream to a buffer
-        const byteArray = await response.Body?.transformToByteArray();
-        if (!byteArray) {
-            throw new Error("Failed to read image stream.");
+        const response = await aws.fetch(endpoint, {
+            method: "GET"
+        });
+
+        if (!response.ok) {
+            console.error("Fetch failed", response.status, await response.text());
+            throw new Error(`Failed to read image stream. Status: ${response.status}`);
         }
 
-        // 3. Return the exact File Buffer with original headers so Next/Image renders it perfectly as an image source.
-        return new NextResponse(Buffer.from(byteArray), {
-            headers: {
-                "Content-Type": response.ContentType || "image/jpeg",
-                "Cache-Control": "public, max-age=86400"
-            }
+        // Return the raw stream (very memory efficient on Edge)
+        const headers = new Headers(response.headers);
+        headers.set("Cache-Control", "public, max-age=86400");
+
+        return new NextResponse(response.body, {
+            status: response.status,
+            headers
         });
 
     } catch (error) {
