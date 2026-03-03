@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import Header from "@/components/Header";
 
 interface Category {
   id: number;
@@ -54,20 +55,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#000000] text-white selection:bg-[#A1A1AA] selection:text-black font-sans">
-      {/* Global Sticky Navigation */}
-      <header className="sticky top-0 z-50 w-full bg-[#000000]/80 backdrop-blur-md border-b border-zinc-900/50">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <Link href="/" className="flex items-center group">
-            <Image src="/white-transparent.png" alt="ShotByHamadi Logo" width={150} height={40} className="object-contain" />
-          </Link>
-          <nav className="hidden md:flex gap-8">
-            <Link href="/" className="text-xs uppercase tracking-widest text-white hover:text-[#A1A1AA] transition-colors duration-300">Work</Link>
-            <Link href="/services" className="text-xs uppercase tracking-widest text-zinc-400 hover:text-[#A1A1AA] transition-colors duration-300">Services</Link>
-            <Link href="/portal" className="text-xs uppercase tracking-widest text-zinc-400 hover:text-[#A1A1AA] transition-colors duration-300">Portal</Link>
-            <Link href="/admin" className="text-xs uppercase tracking-widest text-zinc-400 hover:text-[#A1A1AA] transition-colors duration-300">Admin</Link>
-          </nav>
-        </div>
-      </header>
+      <Header />
 
       <main className="flex-grow flex flex-col justify-start items-center text-center px-6 pt-16 pb-24">
         {/* Hero Section */}
@@ -164,8 +152,8 @@ export default function Home() {
       </footer>
       {/* Contact Modal */}
       {isContactModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm animate-fade-in p-6">
-          <div className="bg-[#000000] border border-zinc-800 p-10 max-w-lg w-full relative shadow-2xl">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm animate-fade-in p-4 md:p-6">
+          <div className="bg-[#000000] border border-zinc-800 p-6 md:p-10 max-w-lg w-full relative shadow-2xl overflow-y-auto max-h-[90vh]">
             <button
               onClick={() => setIsContactModalOpen(false)}
               className="absolute top-6 right-6 text-zinc-500 hover:text-white transition-colors text-2xl leading-none"

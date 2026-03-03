@@ -1,6 +1,7 @@
 import { getRequestContext } from "@cloudflare/next-on-pages";
 import Link from "next/link";
 import Image from "next/image";
+import Header from "@/components/Header";
 
 export const runtime = "edge";
 
@@ -24,17 +25,7 @@ export default async function ServicesPage() {
 
     return (
         <div className="min-h-screen bg-[#000000] text-white selection:bg-[#A1A1AA] selection:text-black font-sans pb-32">
-            <header className="sticky top-0 z-50 w-full bg-[#000000]/80 backdrop-blur-md border-b border-zinc-900/50">
-                <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-                    <Link href="/" className="flex items-center group">
-                        <Image src="/white-transparent.png" alt="ShotByHamadi Logo" width={150} height={40} className="object-contain opacity-80 group-hover:opacity-100 transition-opacity" />
-                    </Link>
-                    <nav className="hidden md:flex items-center gap-8">
-                        <Link href="/services" className="text-[10px] uppercase tracking-[0.2em] text-[#A1A1AA] hover:text-white transition-colors">Services</Link>
-                        <Link href="/portal" className="text-[10px] uppercase tracking-[0.2em] hover:text-[#A1A1AA] transition-colors">Client Portal</Link>
-                    </nav>
-                </div>
-            </header>
+            <Header />
             <main className="p-8 max-w-5xl mx-auto pt-24">
                 <h1 className="text-4xl md:text-5xl font-light tracking-[0.2em] uppercase mb-12 text-center">
                     Our Services

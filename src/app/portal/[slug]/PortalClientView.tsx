@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import Header from "@/components/Header";
 
 type MediaItem = {
     id: number;
@@ -140,27 +141,15 @@ export default function PortalClientView({ project, images }: PortalClientViewPr
 
     return (
         <div className="min-h-screen bg-[#000000] text-white font-sans selection:bg-[#A1A1AA] selection:text-black flex flex-col relative">
-            <header className="sticky top-0 z-50 w-full bg-[#000000]/80 backdrop-blur-md border-b border-zinc-900/50">
-                <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-                    <Link href="/" className="flex items-center group">
-                        <Image src="/white-transparent.png" alt="ShotByHamadi Logo" width={150} height={40} className="object-contain" />
-                    </Link>
-                    <nav className="hidden md:flex gap-8 items-center text-xs tracking-widest uppercase text-zinc-500">
-                        <Link href="/" className="hover:text-[#A1A1AA] transition-colors">Work</Link>
-                        <Link href="/services" className="hover:text-[#A1A1AA] transition-colors">Services</Link>
-                        <Link href="/portal" className="text-white">Portal</Link>
-                        <Link href="/admin" className="hover:text-[#A1A1AA] transition-colors">Admin</Link>
-                    </nav>
-                </div>
-            </header>
+            <Header />
 
             {!isGateOpen ? (
                 // --- GATEKEEPER UI --- //
                 <main className="flex-grow flex flex-col items-center justify-center p-6 w-full animate-fade-in z-40 bg-black min-h-screen fixed inset-0">
-                    <Link href="/" className="absolute top-10 left-10 text-xs text-zinc-500 hover:text-[#A1A1AA] transition-colors uppercase tracking-widest z-50">
+                    <Link href="/" className="absolute top-6 left-6 md:top-10 md:left-10 text-[10px] md:text-xs text-zinc-500 hover:text-[#A1A1AA] transition-colors uppercase tracking-widest z-50">
                         ← Back to site
                     </Link>
-                    <div className="w-full max-w-md border border-zinc-900 p-10 shadow-2xl shadow-black/50 bg-zinc-900/10">
+                    <div className="w-full max-w-md border border-zinc-900 p-6 md:p-10 shadow-2xl shadow-black/50 bg-zinc-900/10 mt-10">
                         <div className="text-center mb-12">
                             <h1 className="text-2xl font-light tracking-[0.3em] uppercase text-white mb-2">{project.name}</h1>
                             <p className="text-[#A1A1AA] text-[9px] tracking-[0.4em] uppercase">Identity Verification</p>
@@ -301,29 +290,29 @@ export default function PortalClientView({ project, images }: PortalClientViewPr
                     className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl flex items-center justify-center animate-fade-in p-4 md:p-12 cursor-zoom-out"
                     onClick={() => setLightboxImage(null)}
                 >
-                    <div className="absolute top-6 left-6 flex gap-4 z-50 pointer-events-auto" onClick={e => e.stopPropagation()}>
+                    <div className="absolute top-16 md:top-6 left-4 md:left-6 flex gap-2 md:gap-4 z-50 pointer-events-auto" onClick={e => e.stopPropagation()}>
                         <button
                             onClick={() => handleStatusChange(localImages.find(i => i.url.includes(lightboxImage.split('key=')[1] || lightboxImage))?.id || 0, 'favorite')}
-                            className={`p-3 border rounded-full transition-all ${localImages.find(i => i.url.includes(lightboxImage.split('key=')[1] || lightboxImage))?.client_status === 'favorite' ? 'border-red-500 text-red-500 bg-red-500/10 scale-110' : 'border-zinc-800 text-zinc-500 hover:border-zinc-500 hover:text-white'}`}
+                            className={`p-2 md:p-3 border rounded-full transition-all ${localImages.find(i => i.url.includes(lightboxImage.split('key=')[1] || lightboxImage))?.client_status === 'favorite' ? 'border-red-500 text-red-500 bg-red-500/10 scale-110' : 'border-zinc-800 text-zinc-500 hover:border-zinc-500 hover:text-white'}`}
                         >
                             ♥
                         </button>
                         <button
                             onClick={() => handleStatusChange(localImages.find(i => i.url.includes(lightboxImage.split('key=')[1] || lightboxImage))?.id || 0, 'liked')}
-                            className={`p-3 border rounded-full transition-all ${localImages.find(i => i.url.includes(lightboxImage.split('key=')[1] || lightboxImage))?.client_status === 'liked' ? 'border-green-500 text-green-500 bg-green-500/10 scale-110' : 'border-zinc-800 text-zinc-500 hover:border-zinc-500 hover:text-white'}`}
+                            className={`p-2 md:p-3 border rounded-full transition-all ${localImages.find(i => i.url.includes(lightboxImage.split('key=')[1] || lightboxImage))?.client_status === 'liked' ? 'border-green-500 text-green-500 bg-green-500/10 scale-110' : 'border-zinc-800 text-zinc-500 hover:border-zinc-500 hover:text-white'}`}
                         >
                             👍
                         </button>
                         <button
                             onClick={() => handleStatusChange(localImages.find(i => i.url.includes(lightboxImage.split('key=')[1] || lightboxImage))?.id || 0, 'disliked')}
-                            className={`p-3 border rounded-full transition-all ${localImages.find(i => i.url.includes(lightboxImage.split('key=')[1] || lightboxImage))?.client_status === 'disliked' ? 'border-red-900 text-red-900 bg-red-900/10 scale-110' : 'border-zinc-800 text-zinc-500 hover:border-zinc-500 hover:text-white'}`}
+                            className={`p-2 md:p-3 border rounded-full transition-all ${localImages.find(i => i.url.includes(lightboxImage.split('key=')[1] || lightboxImage))?.client_status === 'disliked' ? 'border-red-900 text-red-900 bg-red-900/10 scale-110' : 'border-zinc-800 text-zinc-500 hover:border-zinc-500 hover:text-white'}`}
                         >
                             👎
                         </button>
                     </div>
 
                     <button
-                        className="absolute top-6 right-6 text-zinc-500 hover:text-white text-3xl font-light p-4 z-50 transition-colors pointer-events-auto"
+                        className="absolute top-4 right-4 md:top-6 md:right-6 text-zinc-500 hover:text-white text-3xl font-light p-2 md:p-4 z-50 transition-colors pointer-events-auto bg-black/50 md:bg-transparent rounded-full md:rounded-none w-10 h-10 md:w-auto md:h-auto flex items-center justify-center"
                         onClick={(e) => { e.stopPropagation(); setLightboxImage(null); }}
                     >
                         &times;
