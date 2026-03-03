@@ -1,31 +1,33 @@
-export const runtime = "edge";
+"use client";
 
-import { signIn } from "@/auth";
-import { AuthError } from "next-auth";
-import { redirect } from "next/navigation";
+import { useState } from "react";
+import { signIn } from "next-auth/react";
 
-export default async function LoginPage(props: {
-    searchParams: Promise<{ [key: string]: string | string[] | undefined }>
-}) {
-    const searchParams = await props.searchParams;
-    const error = searchParams?.error;
+export default function LoginPage() {
+    const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
 
-    async function handleLogin(formData: FormData) {
-        "use server";
-        try {
-            await signIn("credentials", {
-                email: formData.get("email"),
-                password: formData.get("password"),
-                redirectTo: "/admin",
-            });
-        } catch (err) {
-            if (err instanceof AuthError) {
-                if (err.type === "CredentialsSignin") {
-                    redirect("/admin/login?error=InvalidCredentials");
-                }
-                redirect("/admin/login?error=AuthError");
-            }
-            throw err;
+    async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        setLoading(true);
+        setError(null);
+
+        const formData = new FormData(e.currentTarget);
+        const email = formData.get("email") as string;
+        const password = formData.get("password") as string;
+
+        const result = await signIn("credentials", {
+            email,
+            password,
+            redirect: false,
+        });
+
+        if (result?.error) {
+            setError("Invalid credentials. Access denied.");
+            setLoading(false);
+        } else {
+            // Successful login — navigate to admin dashboard
+            window.location.href = "/admin";
         }
     }
 
@@ -37,7 +39,7 @@ export default async function LoginPage(props: {
                     <p className="text-[#A1A1AA] text-[9px] tracking-[0.4em] uppercase">ShotByHamadi Media</p>
                 </div>
 
-                <form action={handleLogin} className="space-y-8">
+                <form onSubmit={handleLogin} className="space-y-8">
                     <div>
                         <input
                             type="email"
@@ -57,15 +59,16 @@ export default async function LoginPage(props: {
 
                     {error && (
                         <p className="text-red-500 text-[10px] uppercase tracking-widest text-center mt-2 font-bold">
-                            Access Denied
+                            {error}
                         </p>
                     )}
 
                     <button
                         type="submit"
-                        className="w-full bg-[#A1A1AA] text-black py-4 text-xs font-bold uppercase tracking-[0.2em] hover:bg-white transition-colors duration-300 border border-transparent hover:border-white shadow-lg"
+                        disabled={loading}
+                        className="w-full bg-[#A1A1AA] text-black py-4 text-xs font-bold uppercase tracking-[0.2em] hover:bg-white transition-colors duration-300 border border-transparent hover:border-white shadow-lg disabled:opacity-50 disabled:cursor-wait"
                     >
-                        Authenticate
+                        {loading ? "Authenticating..." : "Authenticate"}
                     </button>
                 </form>
             </div>

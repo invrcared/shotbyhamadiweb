@@ -13,7 +13,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             },
             authorize: async (credentials) => {
                 try {
-                    const validEmail = process.env.AUTH_SECRET;
+                    const validEmail = process.env.ADMIN_EMAIL;
                     const validPassword = process.env.ADMIN_PASSWORD;
 
                     if (
@@ -30,9 +30,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             },
         }),
     ],
-    pages: {
-        signIn: "/admin/login",
-    },
     session: {
         strategy: "jwt",
     },

@@ -20,5 +20,8 @@
 - **State Management & Data Fetching**: Prefer server components and React Server Actions where possible. Use `useTransition` hook when invoking Server Actions to prevent UI blocking. Use minimal client-side state hooks (`useState`, `useEffect`) only for highly interactive components or where SSR data fetching would cause a 503 connection timeout.
 - **D1 Schema Architecture**: For simple list/array fields (e.g., features, tags), store them as JSON-stringified arrays directly within D1 text columns instead of creating separate normalization mapping tables.
 
+## Deployment Rules
+- **Push Changes on Code Change**: After every code change, immediately stage all modified files, commit with a descriptive message, and push to `origin/main`. This triggers Cloudflare Pages to deploy to `shotbyhamadi.com` automatically.
+
 ## Optimization Rules
 - **Images**: All images MUST be served via the Next.js `<Image />` component or a dedicated worker-based optimization script to ensure lightning-fast loading speeds, especially for the masonry gallery holding R2 assets.
