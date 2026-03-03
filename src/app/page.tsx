@@ -110,14 +110,13 @@ export default function Home() {
                 ))}
               </div>
 
-              {/* Masonry Grid */}
-              <div className="columns-1 sm:columns-2 md:columns-3 gap-4 space-y-4 animate-fade-in">
-                {filteredImages.length === 0 ? (
-                  <div className="col-span-1 sm:col-span-2 md:col-span-3 py-20 text-zinc-600 text-[10px] uppercase tracking-widest border border-zinc-900/50">
-                    No media available in this category.
-                  </div>
-                ) : (
-                  filteredImages.map((img) => (
+              {filteredImages.length === 0 ? (
+                <div className="w-full py-20 text-zinc-600 text-[10px] uppercase tracking-widest border border-zinc-900/50 text-center break-inside-avoid">
+                  No media available in this category.
+                </div>
+              ) : (
+                <div className="columns-1 sm:columns-2 md:columns-3 gap-4 space-y-4 animate-fade-in">
+                  {filteredImages.map((img) => (
                     <div key={img.id} className="break-inside-avoid relative group overflow-hidden bg-[#27272A] mb-4 cursor-pointer">
                       <Image
                         src={img.url}
@@ -133,9 +132,9 @@ export default function Home() {
                         </span>
                       </div>
                     </div>
-                  ))
-                )}
-              </div>
+                  ))}
+                </div>
+              )}
             </>
           )}
         </div>
