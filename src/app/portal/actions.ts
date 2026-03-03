@@ -25,6 +25,7 @@ export async function authenticatePortalAction(projectCode: string) {
             secure: process.env.NODE_ENV === "production",
             maxAge: 60 * 60 * 24, // 24 hours
             path: "/portal",
+            domain: process.env.NODE_ENV === "production" ? ".shotbyhamadi.com" : undefined,
             sameSite: "lax",
         });
 

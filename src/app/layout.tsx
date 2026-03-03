@@ -12,6 +12,10 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "ShotByHamadi",
   description: "High-end, professional photography and videography platform for ShotByHamadi Media.",
+  metadataBase: new URL("https://www.shotbyhamadi.com"),
+  alternates: {
+    canonical: "./",
+  },
 };
 
 export default function RootLayout({

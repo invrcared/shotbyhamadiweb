@@ -34,6 +34,7 @@ export async function POST(req: NextRequest) {
             secure: process.env.NODE_ENV === "production",
             maxAge: 60 * 60 * 24, // 24 hours
             path: "/",
+            domain: process.env.NODE_ENV === "production" ? ".shotbyhamadi.com" : undefined,
             sameSite: "lax",
         });
 
