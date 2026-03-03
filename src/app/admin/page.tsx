@@ -276,20 +276,25 @@ export default function AdminDashboard() {
 
     return (
         <div className="min-h-screen bg-[#000000] text-white selection:bg-[#A1A1AA] selection:text-black font-sans">
-            <div className="flex h-screen">
-                {/* Sidebar */}
-                <aside className="w-64 border-r border-zinc-900/50 flex flex-col bg-[#000000]">
-                    <div className="p-6 border-b border-zinc-900/50">
-                        <h2 className="text-lg font-light tracking-[0.2em] uppercase mb-1">Admin Portal</h2>
-                        <p className="text-zinc-500 text-xs">ShotByHamadi Media</p>
+            <div className="flex flex-col md:flex-row min-h-screen">
+                {/* Sidebar / Top Nav on Mobile */}
+                <aside className="w-full md:w-64 border-b md:border-b-0 md:border-r border-zinc-900/50 flex flex-col bg-[#000000] sticky top-0 md:static z-50">
+                    <div className="p-4 md:p-6 border-b border-zinc-900/50 flex justify-between items-center md:items-start md:flex-col">
+                        <div>
+                            <h2 className="text-base md:text-lg font-light tracking-[0.2em] uppercase mb-1">Admin Portal</h2>
+                            <p className="text-zinc-500 text-[10px] md:text-xs tracking-widest uppercase">ShotByHamadi</p>
+                        </div>
+                        <Link href="/" className="md:hidden text-[10px] text-zinc-500 hover:text-[#A1A1AA] transition-colors uppercase tracking-widest border border-zinc-800 px-3 py-1.5 rounded-sm">
+                            Exit
+                        </Link>
                     </div>
 
-                    <nav className="flex-1 p-4 space-y-2">
+                    <nav className="flex-none p-2 md:p-4 flex md:flex-col overflow-x-auto snap-x space-x-2 md:space-x-0 md:space-y-2 hide-scrollbar">
                         {["media", "categories", "project", "price"].map((tab) => (
                             <button
                                 key={tab}
                                 onClick={() => setActiveTab(tab as Tab)}
-                                className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-sm transition-colors border ${activeTab === tab
+                                className={`flex-shrink-0 md:w-full flex items-center px-4 py-3 text-xs md:text-sm font-medium rounded-sm transition-colors border snap-start whitespace-nowrap ${activeTab === tab
                                     ? "bg-zinc-900 text-white border-zinc-800"
                                     : "text-zinc-400 border-transparent hover:text-white hover:bg-zinc-900/50"
                                     }`}
@@ -300,7 +305,7 @@ export default function AdminDashboard() {
                         ))}
                     </nav>
 
-                    <div className="p-4 border-t border-zinc-900/50">
+                    <div className="hidden md:block p-4 border-t border-zinc-900/50 mt-auto">
                         <Link href="/" className="text-xs text-zinc-500 hover:text-[#A1A1AA] transition-colors uppercase tracking-widest flex items-center">
                             ← Back to Site
                         </Link>
@@ -308,8 +313,8 @@ export default function AdminDashboard() {
                 </aside>
 
                 {/* Main Content */}
-                <main className="flex-1 overflow-auto bg-[#000000]">
-                    <div className="p-10 max-w-5xl mx-auto">
+                <main className="flex-1 overflow-auto bg-[#000000] w-full max-w-[100vw]">
+                    <div className="p-4 md:p-10 max-w-5xl mx-auto w-full">
 
                         {/* Stats Section (Global) */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 h-32">
@@ -666,8 +671,8 @@ export default function AdminDashboard() {
                                     </div>
                                 )}
 
-                                <div className="border border-zinc-900 overflow-hidden">
-                                    <table className="w-full text-left border-collapse">
+                                <div className="border border-zinc-900 overflow-x-auto">
+                                    <table className="w-full text-left border-collapse min-w-[600px]">
                                         <thead>
                                             <tr className="bg-zinc-900/50 border-b border-zinc-900">
                                                 <th className="p-4 text-xs font-bold uppercase tracking-widest text-zinc-400">ID</th>
