@@ -24,7 +24,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     }
                     return null;
                 } catch (error) {
-                    console.error("Auth provider error:", error);
+                    console.error("Auth error:", error);
                     return null;
                 }
             },
