@@ -1,4 +1,12 @@
 export const runtime = "edge";
+export const dynamic = "force-dynamic";
+
+export const config = {
+    api: {
+        bodyParser: false,
+        sizeLimit: '100mb',
+    },
+};
 
 import { NextRequest, NextResponse } from "next/server";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
