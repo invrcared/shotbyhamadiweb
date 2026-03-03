@@ -1,0 +1,18 @@
+CREATE TABLE IF NOT EXISTS Categories (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT UNIQUE NOT NULL,
+    slug TEXT UNIQUE NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Media (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    url TEXT NOT NULL,
+    category_id INTEGER,
+    project_id TEXT,
+    alt_text TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(category_id) REFERENCES Categories(id) ON DELETE SET NULL,
+    FOREIGN KEY(project_id) REFERENCES Projects(id) ON DELETE CASCADE
+);
+
+INSERT OR IGNORE INTO Categories (name, slug) VALUES ('All', 'all');

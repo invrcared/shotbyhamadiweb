@@ -221,7 +221,12 @@ export default function AdminDashboard() {
             try {
                 // Step 1: Upload to R2 Bucket
                 const uploadRes = await fetch('/api/upload', { method: 'POST', body: formData });
-                if (!uploadRes.ok) throw new Error("Upload to R2 failed");
+                if (!uploadRes.ok) {
+                    const errText = await uploadRes.text();
+                    console.error("Upload failed:", errText);
+                    alert("Upload error: " + errText);
+                    throw new Error("Upload to R2 failed");
+                }
 
                 const uploadData = await uploadRes.json() as { fileName: string };
                 const fileName = uploadData.fileName; // The generated R2 key
@@ -249,10 +254,13 @@ export default function AdminDashboard() {
                 if (res.ok) {
                     successCount++;
                 } else {
-                    console.error("DB Insert Failed for", file.name);
+                    const dbErr = await res.text();
+                    console.error("DB Insert Failed for", file.name, dbErr);
+                    alert("DB Save Error: " + dbErr);
                 }
             } catch (error) {
                 console.error("Upload Error for", file.name, error);
+                alert("Runtime Error: " + String(error));
             }
         }
 
