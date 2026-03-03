@@ -10,7 +10,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "ShotByHamadi | Photography & Videography",
+  title: "ShotByHamadi",
   description: "High-end, professional photography and videography platform for ShotByHamadi Media.",
 };
 
