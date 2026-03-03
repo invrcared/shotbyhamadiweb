@@ -127,7 +127,7 @@ export default function Home() {
                         alt={img.alt_text || "Gallery Image"}
                         width={1000}
                         height={600} // Default fallback height ratio
-                        className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105"
+                        className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105 protected-image"
                         sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
                         onContextMenu={(e) => e.preventDefault()}
                         draggable={false}
@@ -216,7 +216,7 @@ export default function Home() {
             <img
               src={lightboxImage.url}
               alt={lightboxImage.alt_text || "Enlarged Image"}
-              className="max-w-full max-h-[90vh] object-contain shadow-2xl pointer-events-auto select-none"
+              className="max-w-full max-h-[90vh] object-contain shadow-2xl pointer-events-auto select-none protected-image"
               onContextMenu={(e) => e.preventDefault()}
               draggable={false}
             />
