@@ -16,12 +16,33 @@ export async function GET() {
 
 export async function POST(req: Request) {
     try {
-        const body: { title?: string, description?: string, price?: number, features?: string[] } = await req.json();
-        const { title, description, price, features } = body;
+        const body: {
+            title?: string;
+            description?: string;
+            price?: number;
+            features?: string[];
+            category?: string;
+            travel_fee?: number;
+            policy_note?: string;
+            is_active?: number;
+        } = await req.json();
+
+        const { title, description, price, features, category, travel_fee, policy_note, is_active } = body;
         if (!title || price === undefined) return NextResponse.json({ error: "Title and price are required" }, { status: 400 });
 
         const d1 = getRequestContext().env.shotbyhamadi_db;
-        await d1.prepare("INSERT INTO Services (title, description, price, features) VALUES (?, ?, ?, ?)").bind(title, description || "", price, JSON.stringify(features || [])).run();
+        await d1.prepare(
+            "INSERT INTO Services (title, description, price, features, category, travel_fee, policy_note, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+        ).bind(
+            title,
+            description || "",
+            price,
+            JSON.stringify(features || []),
+            category || "General",
+            travel_fee ?? 0,
+            policy_note || "",
+            is_active ?? 1
+        ).run();
 
         return NextResponse.json({ success: true }, { status: 201 });
     } catch (error) {
@@ -32,12 +53,35 @@ export async function POST(req: Request) {
 
 export async function PUT(req: Request) {
     try {
-        const body: { id?: number, title?: string, description?: string, price?: number, features?: string[] } = await req.json();
-        const { id, title, description, price, features } = body;
+        const body: {
+            id?: number;
+            title?: string;
+            description?: string;
+            price?: number;
+            features?: string[];
+            category?: string;
+            travel_fee?: number;
+            policy_note?: string;
+            is_active?: number;
+        } = await req.json();
+
+        const { id, title, description, price, features, category, travel_fee, policy_note, is_active } = body;
         if (!id || !title || price === undefined) return NextResponse.json({ error: "ID, title, and price are required" }, { status: 400 });
 
         const d1 = getRequestContext().env.shotbyhamadi_db;
-        await d1.prepare("UPDATE Services SET title = ?, description = ?, price = ?, features = ? WHERE id = ?").bind(title, description || "", price, JSON.stringify(features || []), id).run();
+        await d1.prepare(
+            "UPDATE Services SET title = ?, description = ?, price = ?, features = ?, category = ?, travel_fee = ?, policy_note = ?, is_active = ? WHERE id = ?"
+        ).bind(
+            title,
+            description || "",
+            price,
+            JSON.stringify(features || []),
+            category || "General",
+            travel_fee ?? 0,
+            policy_note || "",
+            is_active ?? 1,
+            id
+        ).run();
 
         return NextResponse.json({ success: true });
     } catch (error) {

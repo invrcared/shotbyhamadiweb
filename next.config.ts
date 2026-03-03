@@ -9,6 +9,12 @@ if (process.env.NODE_ENV === "development") {
 
 const nextConfig: NextConfig = {
   outputFileTracingRoot: path.join(__dirname, './'),
+  async redirects() {
+    return [
+      { source: '/tos', destination: '/docs/legal', permanent: true },
+      { source: '/terms', destination: '/docs/legal', permanent: true },
+    ];
+  },
   images: {
     remotePatterns: [
       {
@@ -17,7 +23,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'pub-*.r2.dev', // R2 public domain fallback or generic matching
+        hostname: 'pub-*.r2.dev',
       },
       {
         protocol: 'https',

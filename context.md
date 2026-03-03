@@ -13,8 +13,8 @@
 ## Active Database Schemas (Cloudflare D1)
 
 *Currently setting up base schemas:*
-- `Services` (id, title, description, price, features) *Note: `features` is stored as a JSON-stringified array.*
-- `Projects` (id, project_code, client_name, client_email, created_at, folder_path) *Note: Authenticated via Server Action setting a secure session cookie ('client_session').*
+- `Services` (id, title, description, price, features, category, travel_fee, policy_note, is_active) *Note: `features` is stored as a JSON-stringified array.*
+- `Projects` (id, project_code, client_name, client_email, created_at, folder_path, location, project_password, base_price, travel_surcharge, notes) *Note: Authenticated via Server Action setting a secure session cookie ('client_session').*
 
 ## Known Cloudflare Edge Gotchas
 - **"Cannot find module" Crashes**: Often caused by a corrupted Webpack cache targeting Node APIs instead of Edge. Fix by running `rm -rf .next` and ensuring `export const runtime = 'edge';` is set in `app/layout.tsx`.

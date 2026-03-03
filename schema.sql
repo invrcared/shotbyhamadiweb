@@ -9,9 +9,13 @@ DROP TABLE IF EXISTS Media;
 CREATE TABLE Services (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
-    description TEXT NOT NULL,
+    description TEXT NOT NULL DEFAULT '',
     price REAL NOT NULL,
-    features TEXT -- Stored as a JSON string or comma-separated list
+    features TEXT,                      -- JSON-stringified array e.g. ["15 Edited Photos"]
+    category TEXT DEFAULT 'General',    -- e.g. Portraits, Events, Sports
+    travel_fee REAL DEFAULT 0,          -- flat travel surcharge in dollars
+    policy_note TEXT DEFAULT '',        -- short policy sentence shown under price
+    is_active INTEGER DEFAULT 1         -- 1 = visible on public /services, 0 = hidden
 );
 
 CREATE TABLE Projects (

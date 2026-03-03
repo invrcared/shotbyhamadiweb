@@ -63,12 +63,28 @@ export default function AdminDashboard() {
         description: string;
         price: number;
         features?: string;
+        category?: string;
+        travel_fee?: number;
+        policy_note?: string;
+        is_active?: number;
     }
     const [prices, setPrices] = useState<Service[]>([]);
     const [editingServiceId, setEditingServiceId] = useState<number | null>(null);
     const [editForm, setEditForm] = useState<Partial<Service> & { parsedFeatures?: string[] }>({});
     const [isAddingService, setIsAddingService] = useState(false);
-    const [newServiceForm, setNewServiceForm] = useState({ title: "", description: "", price: 0, parsedFeatures: [""] as string[] });
+    const [newServiceForm, setNewServiceForm] = useState({
+        title: "", description: "", price: 0, parsedFeatures: [""] as string[],
+        category: "General", travel_fee: 0, policy_note: "", is_active: 1
+    });
+
+    // Toast Notification
+    const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
+    const showToast = (message: string, type: "success" | "error" = "success") => {
+        setToast({ message, type });
+        setTimeout(() => setToast(null), 3000);
+    };
+
+    const SERVICE_CATEGORIES = ["General", "Portraits", "Events", "Weddings", "Sports", "Automotive", "Commercial"];
 
     useEffect(() => {
         setMounted(true);
@@ -98,11 +114,16 @@ export default function AdminDashboard() {
 
     const handleSaveService = async () => {
         if (!editingServiceId) return;
-        await fetch('/api/services', {
+        const res = await fetch('/api/services', {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ ...editForm, features: editForm.parsedFeatures?.filter((f: string) => f.trim() !== "") })
         });
+        if (res.ok) {
+            showToast("Service updated successfully");
+        } else {
+            showToast("Failed to update service", "error");
+        }
         setEditingServiceId(null);
         setEditForm({});
         fetchServices();
@@ -110,19 +131,29 @@ export default function AdminDashboard() {
 
     const handleCreateService = async () => {
         if (!newServiceForm.title) return;
-        await fetch('/api/services', {
+        const res = await fetch('/api/services', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ ...newServiceForm, features: newServiceForm.parsedFeatures.filter(f => f.trim() !== "") })
         });
+        if (res.ok) {
+            showToast("Service created successfully");
+        } else {
+            showToast("Failed to create service", "error");
+        }
         setIsAddingService(false);
-        setNewServiceForm({ title: "", description: "", price: 0, parsedFeatures: [""] });
+        setNewServiceForm({ title: "", description: "", price: 0, parsedFeatures: [""], category: "General", travel_fee: 0, policy_note: "", is_active: 1 });
         fetchServices();
     };
 
     const handleDeleteService = async (id: number) => {
         if (!confirm("Delete this service?")) return;
-        await fetch(`/api/services?id=${id}`, { method: 'DELETE' });
+        const res = await fetch(`/api/services?id=${id}`, { method: 'DELETE' });
+        if (res.ok) {
+            showToast("Service deleted");
+        } else {
+            showToast("Failed to delete service", "error");
+        }
         fetchServices();
     };
 
@@ -276,6 +307,16 @@ export default function AdminDashboard() {
 
     return (
         <div className="min-h-screen bg-[#000000] text-white selection:bg-[#A1A1AA] selection:text-black font-sans">
+            {/* Toast Notification */}
+            {toast && (
+                <div className={`fixed bottom-6 right-6 z-50 flex items-center gap-3 px-5 py-4 border text-xs tracking-widest uppercase font-bold shadow-2xl transition-all duration-300 ${toast.type === "success"
+                        ? "bg-zinc-900 border-[#A1A1AA] text-white"
+                        : "bg-zinc-900 border-red-700 text-red-400"
+                    }`}>
+                    <span className={toast.type === "success" ? "text-[#A1A1AA]" : "text-red-500"}>■</span>
+                    {toast.message}
+                </div>
+            )}
             <div className="flex flex-col md:flex-row min-h-screen">
                 {/* Sidebar / Top Nav on Mobile */}
                 <aside className="w-full md:w-64 border-b md:border-b-0 md:border-r border-zinc-900/50 flex flex-col bg-[#000000] sticky top-0 md:static z-50">
@@ -652,11 +693,61 @@ export default function AdminDashboard() {
                                 {isAddingService && (
                                     <div className="border border-zinc-900 p-6 bg-zinc-900/30">
                                         <h3 className="text-sm font-bold uppercase tracking-widest mb-4 text-[#A1A1AA]">Create Service</h3>
+
+                                        {/* Row 1: Name + Price */}
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                            <input className="bg-[#000000] border border-zinc-800 p-3 text-sm text-white focus:outline-none focus:border-[#A1A1AA]" placeholder="Service Name" value={newServiceForm.title} onChange={e => setNewServiceForm({ ...newServiceForm, title: e.target.value })} />
-                                            <input type="number" className="bg-[#000000] border border-zinc-800 p-3 text-sm text-[#A1A1AA] focus:outline-none focus:border-[#A1A1AA]" placeholder="Price" value={newServiceForm.price || ''} onChange={e => setNewServiceForm({ ...newServiceForm, price: parseFloat(e.target.value) || 0 })} />
-                                            <input className="md:col-span-2 bg-[#000000] border border-zinc-800 p-3 text-sm text-white focus:outline-none focus:border-[#A1A1AA]" placeholder="Brief Description" value={newServiceForm.description} onChange={e => setNewServiceForm({ ...newServiceForm, description: e.target.value })} />
+                                            <div>
+                                                <label className="block text-[10px] uppercase tracking-widest text-zinc-500 mb-1">Service Name</label>
+                                                <input className="w-full bg-[#000000] border border-zinc-800 p-3 text-sm text-white focus:outline-none focus:border-[#A1A1AA]" placeholder="e.g. Essential Portraits" value={newServiceForm.title} onChange={e => setNewServiceForm({ ...newServiceForm, title: e.target.value })} />
+                                            </div>
+                                            <div>
+                                                <label className="block text-[10px] uppercase tracking-widest text-zinc-500 mb-1">Price ($)</label>
+                                                <input type="number" className="w-full bg-[#000000] border border-zinc-800 p-3 text-sm text-[#A1A1AA] focus:outline-none focus:border-[#A1A1AA]" placeholder="0.00" value={newServiceForm.price || ''} onChange={e => setNewServiceForm({ ...newServiceForm, price: parseFloat(e.target.value) || 0 })} />
+                                            </div>
                                         </div>
+
+                                        {/* Row 2: Description */}
+                                        <div className="mb-4">
+                                            <label className="block text-[10px] uppercase tracking-widest text-zinc-500 mb-1">Brief Description</label>
+                                            <input className="w-full bg-[#000000] border border-zinc-800 p-3 text-sm text-white focus:outline-none focus:border-[#A1A1AA]" placeholder="1 Hour Session • 15 Edited Photos" value={newServiceForm.description} onChange={e => setNewServiceForm({ ...newServiceForm, description: e.target.value })} />
+                                        </div>
+
+                                        {/* Row 3: Category + Travel Fee */}
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                            <div>
+                                                <label className="block text-[10px] uppercase tracking-widest text-zinc-500 mb-1">Category</label>
+                                                <select className="w-full bg-[#000000] border border-zinc-800 p-3 text-sm text-white focus:outline-none focus:border-[#A1A1AA] uppercase tracking-widest" value={newServiceForm.category} onChange={e => setNewServiceForm({ ...newServiceForm, category: e.target.value })}>
+                                                    {SERVICE_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label className="block text-[10px] uppercase tracking-widest text-zinc-500 mb-1">Travel Fee ($) <span className="text-zinc-600">— 0 if local</span></label>
+                                                <input type="number" className="w-full bg-[#000000] border border-zinc-800 p-3 text-sm text-[#A1A1AA] focus:outline-none focus:border-[#A1A1AA]" placeholder="0.00" value={newServiceForm.travel_fee || ''} onChange={e => setNewServiceForm({ ...newServiceForm, travel_fee: parseFloat(e.target.value) || 0 })} />
+                                            </div>
+                                        </div>
+
+                                        {/* Row 4: Policy Note + Active Toggle */}
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                                            <div>
+                                                <label className="block text-[10px] uppercase tracking-widest text-zinc-500 mb-1">Policy Note <span className="text-zinc-600">— shown under price</span></label>
+                                                <input className="w-full bg-[#000000] border border-zinc-800 p-3 text-sm text-[#A1A1AA] focus:outline-none focus:border-[#A1A1AA]" placeholder="e.g. 50% retainer required at booking" value={newServiceForm.policy_note} onChange={e => setNewServiceForm({ ...newServiceForm, policy_note: e.target.value })} />
+                                            </div>
+                                            <div className="flex flex-col justify-end">
+                                                <label className="block text-[10px] uppercase tracking-widest text-zinc-500 mb-1">Visibility</label>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setNewServiceForm({ ...newServiceForm, is_active: newServiceForm.is_active === 1 ? 0 : 1 })}
+                                                    className={`px-4 py-3 text-xs font-bold uppercase tracking-widest border transition-colors ${newServiceForm.is_active === 1
+                                                            ? "bg-zinc-900 border-[#A1A1AA] text-white"
+                                                            : "bg-transparent border-zinc-800 text-zinc-600"
+                                                        }`}
+                                                >
+                                                    {newServiceForm.is_active === 1 ? "● Active" : "○ Hidden"}
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        {/* Features */}
                                         <div className="mb-6">
                                             <label className="block text-xs uppercase tracking-widest text-[#A1A1AA] mb-2">Features (Bullet Points)</label>
                                             {newServiceForm.parsedFeatures.map((f, i) => (
@@ -667,17 +758,20 @@ export default function AdminDashboard() {
                                             ))}
                                             <button onClick={() => setNewServiceForm({ ...newServiceForm, parsedFeatures: [...newServiceForm.parsedFeatures, ""] })} className="text-xs text-zinc-500 hover:text-white uppercase tracking-widest transition-colors mt-2">+ Add Feature</button>
                                         </div>
+
                                         <button onClick={handleCreateService} className="bg-[#A1A1AA] text-black px-6 py-3 text-xs font-bold uppercase tracking-widest hover:bg-white transition-colors">Save Service</button>
                                     </div>
                                 )}
 
                                 <div className="border border-zinc-900 overflow-x-auto">
-                                    <table className="w-full text-left border-collapse min-w-[600px]">
+                                    <table className="w-full text-left border-collapse min-w-[700px]">
                                         <thead>
                                             <tr className="bg-zinc-900/50 border-b border-zinc-900">
                                                 <th className="p-4 text-xs font-bold uppercase tracking-widest text-zinc-400">ID</th>
                                                 <th className="p-4 text-xs font-bold uppercase tracking-widest text-zinc-400">Service Package</th>
+                                                <th className="p-4 text-xs font-bold uppercase tracking-widest text-zinc-400">Category</th>
                                                 <th className="p-4 text-xs font-bold uppercase tracking-widest text-zinc-400">Price</th>
+                                                <th className="p-4 text-xs font-bold uppercase tracking-widest text-zinc-400">Status</th>
                                                 <th className="p-4 text-xs font-bold uppercase tracking-widest text-zinc-400 text-right">Actions</th>
                                             </tr>
                                         </thead>
@@ -692,19 +786,41 @@ export default function AdminDashboard() {
 
                                                         {editingServiceId === p.id ? (
                                                             <>
-                                                                <td className="p-4 align-top">
+                                                                <td className="p-4 align-top" colSpan={3}>
+                                                                    {/* Title + Description */}
                                                                     <input
                                                                         className="w-full bg-[#000000] border border-zinc-700 p-2 text-sm text-white focus:outline-none focus:border-[#A1A1AA] mb-2"
+                                                                        placeholder="Service Name"
                                                                         value={editForm.title || ""}
                                                                         onChange={e => setEditForm({ ...editForm, title: e.target.value })}
                                                                     />
                                                                     <input
-                                                                        className="w-full bg-transparent border-none p-0 text-xs text-zinc-500 focus:outline-none focus:text-[#A1A1AA] mb-4"
-                                                                        placeholder="Optional Description..."
+                                                                        className="w-full bg-transparent border-b border-zinc-800 p-1 text-xs text-zinc-500 focus:outline-none focus:text-[#A1A1AA] mb-3"
+                                                                        placeholder="Brief description..."
                                                                         value={editForm.description || ""}
                                                                         onChange={e => setEditForm({ ...editForm, description: e.target.value })}
                                                                     />
+                                                                    {/* Category + Travel Fee */}
+                                                                    <div className="grid grid-cols-2 gap-3 mb-3">
+                                                                        <div>
+                                                                            <label className="block text-[10px] uppercase tracking-widest text-zinc-600 mb-1">Category</label>
+                                                                            <select className="w-full bg-[#000000] border border-zinc-800 p-2 text-xs text-white focus:outline-none focus:border-[#A1A1AA]" value={editForm.category || "General"} onChange={e => setEditForm({ ...editForm, category: e.target.value })}>
+                                                                                {SERVICE_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                                                                            </select>
+                                                                        </div>
+                                                                        <div>
+                                                                            <label className="block text-[10px] uppercase tracking-widest text-zinc-600 mb-1">Travel Fee ($)</label>
+                                                                            <input type="number" className="w-full bg-[#000000] border border-zinc-800 p-2 text-xs text-[#A1A1AA] focus:outline-none focus:border-[#A1A1AA]" value={editForm.travel_fee ?? 0} onChange={e => setEditForm({ ...editForm, travel_fee: parseFloat(e.target.value) || 0 })} />
+                                                                        </div>
+                                                                    </div>
+                                                                    {/* Policy Note */}
+                                                                    <div className="mb-3">
+                                                                        <label className="block text-[10px] uppercase tracking-widest text-zinc-600 mb-1">Policy Note</label>
+                                                                        <input className="w-full bg-[#000000] border border-zinc-800 p-2 text-xs text-[#A1A1AA] focus:outline-none focus:border-[#A1A1AA]" placeholder="e.g. 50% retainer required at booking" value={editForm.policy_note || ""} onChange={e => setEditForm({ ...editForm, policy_note: e.target.value })} />
+                                                                    </div>
+                                                                    {/* Features */}
                                                                     <div className="space-y-2">
+                                                                        <label className="block text-[10px] uppercase tracking-widest text-zinc-600">Features</label>
                                                                         {editForm.parsedFeatures?.map((f, i) => (
                                                                             <div key={i} className="flex gap-2">
                                                                                 <input className="flex-1 bg-[#000000] border border-zinc-800 p-2 text-sm text-zinc-400 focus:outline-none focus:border-[#A1A1AA]" value={f} onChange={e => { const updated = [...(editForm.parsedFeatures || [])]; updated[i] = e.target.value; setEditForm({ ...editForm, parsedFeatures: updated }); }} />
@@ -715,16 +831,33 @@ export default function AdminDashboard() {
                                                                     </div>
                                                                 </td>
                                                                 <td className="p-4 align-top">
+                                                                    <label className="block text-[10px] uppercase tracking-widest text-zinc-600 mb-1">Price ($)</label>
                                                                     <input
                                                                         type="number"
                                                                         className="w-full bg-[#000000] border border-zinc-700 p-2 text-sm text-[#A1A1AA] font-mono focus:outline-none focus:border-[#A1A1AA]"
                                                                         value={editForm.price || 0}
                                                                         onChange={e => setEditForm({ ...editForm, price: parseFloat(e.target.value) })}
                                                                     />
+                                                                    <div className="mt-3">
+                                                                        <label className="block text-[10px] uppercase tracking-widest text-zinc-600 mb-1">Status</label>
+                                                                        <button
+                                                                            type="button"
+                                                                            onClick={() => setEditForm({ ...editForm, is_active: editForm.is_active === 1 ? 0 : 1 })}
+                                                                            className={`px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest border transition-colors ${editForm.is_active === 1
+                                                                                    ? "bg-zinc-900 border-[#A1A1AA] text-white"
+                                                                                    : "bg-transparent border-zinc-800 text-zinc-600"
+                                                                                }`}
+                                                                        >
+                                                                            {editForm.is_active === 1 ? "● Active" : "○ Hidden"}
+                                                                        </button>
+                                                                    </div>
                                                                 </td>
-                                                                <td className="p-4 text-right space-x-4 align-top flex justify-end">
-                                                                    <button onClick={handleSaveService} className="text-xs tracking-widest uppercase text-green-500 hover:text-green-400 transition-colors">Save</button>
-                                                                    <button onClick={() => setEditingServiceId(null)} className="text-xs tracking-widest uppercase text-zinc-500 hover:text-white transition-colors">Cancel</button>
+                                                                <td className="p-4 align-top"></td>
+                                                                <td className="p-4 text-right align-top">
+                                                                    <div className="flex flex-col gap-2 items-end">
+                                                                        <button onClick={handleSaveService} className="text-xs tracking-widest uppercase text-green-500 hover:text-green-400 transition-colors">Save</button>
+                                                                        <button onClick={() => setEditingServiceId(null)} className="text-xs tracking-widest uppercase text-zinc-500 hover:text-white transition-colors">Cancel</button>
+                                                                    </div>
                                                                 </td>
                                                             </>
                                                         ) : (
@@ -739,11 +872,28 @@ export default function AdminDashboard() {
                                                                             ))}
                                                                         </ul>
                                                                     )}
+                                                                    {p.policy_note && (
+                                                                        <p className="text-[10px] text-[#A1A1AA] uppercase tracking-widest mt-3 border-t border-zinc-900 pt-2">{p.policy_note}</p>
+                                                                    )}
+                                                                    {(p.travel_fee ?? 0) > 0 && (
+                                                                        <p className="text-[10px] text-zinc-500 mt-1">+ ${p.travel_fee} travel fee</p>
+                                                                    )}
                                                                 </td>
-                                                                <td className="p-4 text-sm text-[#A1A1AA] font-mono align-top">${p.price}</td>
-                                                                <td className="p-4 text-right space-x-4 align-top flex justify-end">
-                                                                    <button onClick={() => handleEditService(p)} className="text-xs tracking-widest uppercase text-zinc-500 hover:text-white transition-colors">Edit</button>
-                                                                    <button onClick={() => handleDeleteService(p.id)} className="text-xs tracking-widest uppercase text-red-900 hover:text-red-500 transition-colors">Delete</button>
+                                                                <td className="p-4 text-xs text-zinc-500 uppercase tracking-widest align-top">{p.category || "General"}</td>
+                                                                <td className="p-4 align-top">
+                                                                    <span className="text-sm text-[#A1A1AA] font-mono">${p.price}</span>
+                                                                </td>
+                                                                <td className="p-4 align-top">
+                                                                    <span className={`text-[10px] uppercase tracking-widest font-bold ${p.is_active !== 0 ? "text-[#A1A1AA]" : "text-zinc-700"
+                                                                        }`}>
+                                                                        {p.is_active !== 0 ? "● Active" : "○ Hidden"}
+                                                                    </span>
+                                                                </td>
+                                                                <td className="p-4 text-right align-top">
+                                                                    <div className="flex flex-col gap-2 items-end">
+                                                                        <button onClick={() => handleEditService(p)} className="text-xs tracking-widest uppercase text-zinc-500 hover:text-white transition-colors">Edit</button>
+                                                                        <button onClick={() => handleDeleteService(p.id)} className="text-xs tracking-widest uppercase text-red-900 hover:text-red-500 transition-colors">Delete</button>
+                                                                    </div>
                                                                 </td>
                                                             </>
                                                         )}
