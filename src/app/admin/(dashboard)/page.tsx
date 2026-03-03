@@ -163,7 +163,7 @@ export default function AdminDashboard() {
     };
 
     const fetchCategories = async () => {
-        const res = await fetch('/api/categories');
+        const res = await fetch('/api/categories?t=' + Date.now());
         if (res.ok) setCategories(await res.json());
     };
 
@@ -176,21 +176,32 @@ export default function AdminDashboard() {
         e.preventDefault();
         if (!newCategoryName) return;
 
-        await fetch('/api/categories', {
+        const res = await fetch('/api/categories', {
             method: 'POST',
             body: JSON.stringify({ name: newCategoryName }),
             headers: { 'Content-Type': 'application/json' }
         });
 
-        setNewCategoryName("");
-        fetchCategories(); // Refresh list
+        if (res.ok) {
+            showToast("Category created successfully");
+            setNewCategoryName("");
+            fetchCategories(); // Refresh list
+        } else {
+            const data = (await res.json()) as { error?: string };
+            showToast(data.error || "Failed to create category", "error");
+        }
     };
 
     const handleDeleteCategory = async (id: number) => {
         if (!confirm("Are you sure? This will not delete media but sets their category to null.")) return;
-        await fetch(`/api/categories?id=${id}`, { method: 'DELETE' });
-        fetchCategories();
-        fetchMedia(); // Refresh media since category names change
+        const res = await fetch(`/api/categories?id=${id}`, { method: 'DELETE' });
+        if (res.ok) {
+            showToast("Category deleted");
+            fetchCategories();
+            fetchMedia(); // Refresh media since category names change
+        } else {
+            showToast("Failed to delete category", "error");
+        }
     };
 
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -310,8 +321,8 @@ export default function AdminDashboard() {
             {/* Toast Notification */}
             {toast && (
                 <div className={`fixed bottom-6 right-6 z-50 flex items-center gap-3 px-5 py-4 border text-xs tracking-widest uppercase font-bold shadow-2xl transition-all duration-300 ${toast.type === "success"
-                        ? "bg-zinc-900 border-[#A1A1AA] text-white"
-                        : "bg-zinc-900 border-red-700 text-red-400"
+                    ? "bg-zinc-900 border-[#A1A1AA] text-white"
+                    : "bg-zinc-900 border-red-700 text-red-400"
                     }`}>
                     <span className={toast.type === "success" ? "text-[#A1A1AA]" : "text-red-500"}>■</span>
                     {toast.message}
@@ -738,8 +749,8 @@ export default function AdminDashboard() {
                                                     type="button"
                                                     onClick={() => setNewServiceForm({ ...newServiceForm, is_active: newServiceForm.is_active === 1 ? 0 : 1 })}
                                                     className={`px-4 py-3 text-xs font-bold uppercase tracking-widest border transition-colors ${newServiceForm.is_active === 1
-                                                            ? "bg-zinc-900 border-[#A1A1AA] text-white"
-                                                            : "bg-transparent border-zinc-800 text-zinc-600"
+                                                        ? "bg-zinc-900 border-[#A1A1AA] text-white"
+                                                        : "bg-transparent border-zinc-800 text-zinc-600"
                                                         }`}
                                                 >
                                                     {newServiceForm.is_active === 1 ? "● Active" : "○ Hidden"}
@@ -844,8 +855,8 @@ export default function AdminDashboard() {
                                                                             type="button"
                                                                             onClick={() => setEditForm({ ...editForm, is_active: editForm.is_active === 1 ? 0 : 1 })}
                                                                             className={`px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest border transition-colors ${editForm.is_active === 1
-                                                                                    ? "bg-zinc-900 border-[#A1A1AA] text-white"
-                                                                                    : "bg-transparent border-zinc-800 text-zinc-600"
+                                                                                ? "bg-zinc-900 border-[#A1A1AA] text-white"
+                                                                                : "bg-transparent border-zinc-800 text-zinc-600"
                                                                                 }`}
                                                                         >
                                                                             {editForm.is_active === 1 ? "● Active" : "○ Hidden"}
