@@ -25,7 +25,6 @@ export default async function ServicesPage() {
 
     return (
         <div className="min-h-screen bg-[#000000] text-white selection:bg-[#A1A1AA] selection:text-black font-sans pb-32">
-            <Header />
             <main className="p-8 max-w-5xl mx-auto pt-24">
                 <h1 className="text-4xl md:text-5xl font-light tracking-[0.2em] uppercase mb-12 text-center">
                     Our Services
@@ -51,7 +50,7 @@ export default async function ServicesPage() {
                     <h3 className="text-[#A1A1AA] uppercase tracking-[0.3em] text-xs font-bold mb-4">Before You Book</h3>
                     <p className="text-zinc-400 text-sm leading-relaxed">
                         No deposits for Chattanooga/30-min radius. Custom quotes apply for travel sessions.
-                        Please review our full <a href="/terms" className="text-white underline decoration-[#A1A1AA] underline-offset-4 hover:text-[#A1A1AA] transition-colors">Terms & Guidelines</a> before booking.
+                        Please review our full <a href="/docs/legal" className="text-white underline decoration-[#A1A1AA] underline-offset-4 hover:text-[#A1A1AA] transition-colors">Terms & Guidelines</a> or our <a href="/docs" className="text-white underline decoration-[#A1A1AA] underline-offset-4 hover:text-[#A1A1AA] transition-colors">Documentation</a> before booking.
                     </p>
                 </div>
                 <div className="flex justify-center mt-16">

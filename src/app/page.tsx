@@ -55,7 +55,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#000000] text-white selection:bg-[#A1A1AA] selection:text-black font-sans">
-      <Header />
 
       <main className="flex-grow flex flex-col justify-start items-center text-center px-6 pt-16 pb-24">
         {/* Hero Section */}
@@ -145,9 +144,15 @@ export default function Home() {
         <p className="text-zinc-600 text-[9px] uppercase tracking-[0.5em] font-medium text-center">
           &copy; {new Date().getFullYear()} ShotByHamadi Media. All Rights Reserved.
         </p>
-        <Link href="/terms" className="text-zinc-500 hover:text-white transition-colors text-[9px] uppercase tracking-widest font-medium">
-          Terms & Guidelines
-        </Link>
+        <div className="flex gap-4 items-center">
+          <Link href="/docs/legal" className="text-zinc-500 hover:text-white transition-colors text-[9px] uppercase tracking-widest font-medium">
+            Terms & Guidelines
+          </Link>
+          <span className="text-zinc-600">|</span>
+          <Link href="/docs" className="text-zinc-500 hover:text-white transition-colors text-[9px] uppercase tracking-widest font-medium">
+            Documentation / Docs
+          </Link>
+        </div>
       </footer>
       {/* Contact Modal */}
       {isContactModalOpen && (

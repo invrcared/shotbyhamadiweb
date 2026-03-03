@@ -141,7 +141,6 @@ export default function PortalClientView({ project, images }: PortalClientViewPr
 
     return (
         <div className="min-h-screen bg-[#000000] text-white font-sans selection:bg-[#A1A1AA] selection:text-black flex flex-col relative">
-            <Header />
 
             {!isGateOpen ? (
                 // --- GATEKEEPER UI --- //
@@ -344,7 +343,7 @@ export default function PortalClientView({ project, images }: PortalClientViewPr
                                     )}
                                 </div>
                                 <span className="text-[10px] uppercase tracking-widest text-[#A1A1AA] group-hover/consent:text-white transition-colors">
-                                    I agree to the <Link href="/terms" target="_blank" className="underline hover:text-white">Terms & Personal Use License</Link>.
+                                    I agree to the <Link href="/docs/legal" target="_blank" className="underline hover:text-white">Terms & Personal Use License</Link>.
                                 </span>
                             </label>
 

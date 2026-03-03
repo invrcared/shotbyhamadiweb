@@ -25,6 +25,8 @@ export const viewport = {
   userScalable: false,
 };
 
+import Header from "@/components/Header";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -32,7 +34,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} font-sans antialiased`}>
+      <body className={`${inter.variable} font-sans antialiased text-white bg-black`}>
+        <Header />
         {children}
       </body>
     </html>
