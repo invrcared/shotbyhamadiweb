@@ -635,6 +635,7 @@ export default function AdminDashboard() {
                                                 setAlbumForm({ ...albumForm, title, slug: title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') });
                                             }} required />
                                             <input className="bg-[#000000] border border-zinc-800 p-3 text-sm text-zinc-500 font-mono" placeholder="slug-name" value={albumForm.slug || ''} onChange={e => setAlbumForm({ ...albumForm, slug: e.target.value })} required />
+                                            <input className="bg-[#000000] border border-zinc-800 p-3 text-sm text-white focus:border-[#A1A1AA]" placeholder="Cover Image URL (Optional)" value={albumForm.cover_image_url || ''} onChange={e => setAlbumForm({ ...albumForm, cover_image_url: e.target.value })} />
                                             <input className="bg-[#000000] border border-zinc-800 p-3 text-sm text-white" placeholder="Description (Optional)" value={albumForm.description || ''} onChange={e => setAlbumForm({ ...albumForm, description: e.target.value })} />
                                             <input className="bg-[#000000] border border-zinc-800 p-3 text-sm text-white" placeholder="Date String e.g. Oct 2026" value={albumForm.date || ''} onChange={e => setAlbumForm({ ...albumForm, date: e.target.value })} />
                                             <button className="bg-[#A1A1AA] text-black px-6 py-3 text-xs font-bold uppercase tracking-widest">Save Album</button>

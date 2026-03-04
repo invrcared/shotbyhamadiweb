@@ -15,8 +15,15 @@ interface Album {
 
 export default async function AlbumsPage() {
     const d1 = getRequestContext().env.shotbyhamadi_db;
-    const { results } = await d1.prepare("SELECT * FROM Albums WHERE is_published = 1 ORDER BY created_at DESC").all();
-    const albums = results as unknown as Album[];
+    const query = `
+        SELECT Albums.*, 
+               (SELECT url FROM Media WHERE album_id = Albums.id ORDER BY created_at ASC LIMIT 1) as fallback_cover
+        FROM Albums 
+        WHERE is_published = 1 
+        ORDER BY created_at DESC
+    `;
+    const { results } = await d1.prepare(query).all();
+    const albums = results as unknown as (Album & { fallback_cover: string | null })[];
 
     return (
         <div className="min-h-screen bg-[#000000] text-white pt-24 px-6 md:px-12 pb-24 selection:bg-[#A1A1AA] selection:text-black">
@@ -37,9 +44,9 @@ export default async function AlbumsPage() {
                         {albums.map(album => (
                             <Link key={album.id} href={`/albums/${album.slug}`} className="group block">
                                 <div className="relative aspect-[4/5] mb-6 overflow-hidden bg-zinc-900 border border-zinc-900/50">
-                                    {album.cover_image_url ? (
+                                    {album.cover_image_url || album.fallback_cover ? (
                                         <Image
-                                            src={album.cover_image_url.startsWith('http') ? album.cover_image_url : `/api/preview?key=${encodeURIComponent(album.cover_image_url)}`}
+                                            src={(album.cover_image_url || album.fallback_cover!).startsWith('http') ? (album.cover_image_url || album.fallback_cover!) : `/api/preview?key=${encodeURIComponent(album.cover_image_url || album.fallback_cover!)}`}
                                             alt={album.title}
                                             fill
                                             className="object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 ease-in-out"
