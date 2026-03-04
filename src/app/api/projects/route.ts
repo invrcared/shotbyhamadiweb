@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
         const finalLocation = location || "United States";
 
         await d1.prepare(`
-            INSERT INTO Projects (id, project_code, project_slug, client_name, client_email, created_at, folder_path, location, project_password, base_price, travel_surcharge, notes)
+            INSERT INTO Projects (id, project_code, project_slug, client_name, client_email, created_at, folder_path, location, password, base_price, travel_surcharge, notes)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `).bind(id, projectCode, finalSlug, clientName, "N/A", date, "/", finalLocation, projectPassword || null, basePrice || 0, travelSurcharge || 0, notes || null).run();
 
