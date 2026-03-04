@@ -7,6 +7,7 @@ export async function GET(req: Request) {
     try {
         const url = new URL(req.url);
         const categoryId = url.searchParams.get("categoryId");
+        const albumId = url.searchParams.get("albumId");
         const publicOnly = url.searchParams.get("publicOnly") === "true";
 
         const d1 = getRequestContext().env.shotbyhamadi_db;
@@ -22,6 +23,11 @@ export async function GET(req: Request) {
         if (categoryId) {
             conditions.push("Media.category_id = ?");
             params.push(categoryId);
+        }
+
+        if (albumId) {
+            conditions.push("Media.album_id = ?");
+            params.push(albumId);
         }
 
         if (publicOnly) {
@@ -50,8 +56,8 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
     try {
-        const body = await req.json() as { url?: string, categoryId?: string, projectId?: string, altText?: string, isPublic?: boolean };
-        const { url, categoryId, projectId, altText, isPublic } = body;
+        const body = await req.json() as { url?: string, categoryId?: string, projectId?: string, albumId?: string, altText?: string, isPublic?: boolean };
+        const { url, categoryId, projectId, albumId, altText, isPublic } = body;
 
         if (!url) {
             return NextResponse.json({ error: "URL (R2 Key) is required" }, { status: 400 });
@@ -60,8 +66,8 @@ export async function POST(req: Request) {
         const isPublicValue = isPublic !== false ? 1 : 0; // Default to 1 (true)
 
         const d1 = getRequestContext().env.shotbyhamadi_db;
-        await d1.prepare("INSERT INTO Media (url, category_id, project_id, alt_text, is_public) VALUES (?, ?, ?, ?, ?)")
-            .bind(url, categoryId || null, projectId || null, altText || "Uploaded Image", isPublicValue)
+        await d1.prepare("INSERT INTO Media (url, category_id, project_id, album_id, alt_text, is_public) VALUES (?, ?, ?, ?, ?, ?)")
+            .bind(url, categoryId || null, projectId || null, albumId || null, altText || "Uploaded Image", isPublicValue)
             .run();
 
         return NextResponse.json({ success: true, url: `/api/preview?key=${encodeURIComponent(url)}` }, { status: 201 });

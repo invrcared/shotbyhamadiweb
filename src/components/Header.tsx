@@ -11,6 +11,7 @@ export default function Header() {
 
     const navLinks = [
         { href: "/", label: "Work" },
+        { href: "/albums", label: "Albums" },
         { href: "/services", label: "Services" },
         { href: "/docs", label: "Docs" },
         { href: "/portal", label: "Portal" },

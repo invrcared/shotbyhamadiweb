@@ -4,12 +4,22 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
-type Tab = "media" | "project" | "price" | "categories";
+type Tab = "media" | "project" | "price" | "categories" | "albums";
 
 interface Category {
     id: number;
     name: string;
     slug: string;
+}
+
+interface Album {
+    id: number;
+    title: string;
+    slug: string;
+    description: string;
+    cover_image_url: string;
+    date: string;
+    is_published: number;
 }
 
 interface MediaItem {
@@ -30,10 +40,16 @@ export default function AdminDashboard() {
     const [lightboxImage, setLightboxImage] = useState<MediaItem | null>(null);
     const [stats, setStats] = useState({ totalMedia: 0, activeProjects: 0, storageUsed: "0 GB" });
 
+    // Albums
+    const [albums, setAlbums] = useState<Album[]>([]);
+    const [albumForm, setAlbumForm] = useState<Partial<Album>>({});
+    const [isAddingAlbum, setIsAddingAlbum] = useState(false);
+    const [selectedAlbum, setSelectedAlbum] = useState("");
+
     // Forms & UI States
     const [isUploading, setIsUploading] = useState(false);
     const [uploadStatus, setUploadStatus] = useState<string | null>(null);
-    const [uploadDestination, setUploadDestination] = useState<"portfolio" | "portal">("portfolio");
+    const [uploadDestination, setUploadDestination] = useState<"portfolio" | "portal" | "albums">("portfolio");
     const [selectedCategory, setSelectedCategory] = useState<string>("");
     const [selectedProject, setSelectedProject] = useState<string>("");
 
@@ -94,7 +110,13 @@ export default function AdminDashboard() {
         fetchMedia();
         fetchServices();
         fetchProjects();
+        fetchAlbums();
     }, []);
+
+    const fetchAlbums = async () => {
+        const res = await fetch('/api/albums');
+        if (res.ok) setAlbums(await res.json());
+    };
 
     const fetchProjects = async () => {
         const res = await fetch('/api/projects');
@@ -233,17 +255,19 @@ export default function AdminDashboard() {
                 const fileName = uploadData.fileName; // The generated R2 key
 
                 // Step 2: Insert into D1 Media Table
-                const isPortfolio = uploadDestination === "portfolio";
+                const isPortfolio = uploadDestination === "portfolio" || uploadDestination === "albums";
                 const payload: Record<string, string | number | boolean> = {
                     url: fileName,
                     altText: file.name,
                     isPublic: isPortfolio
                 };
 
-                if (isPortfolio && selectedCategory) {
+                if (uploadDestination === "portfolio" && selectedCategory) {
                     payload.categoryId = Number(selectedCategory);
-                } else if (!isPortfolio && selectedProject) {
+                } else if (uploadDestination === "portal" && selectedProject) {
                     payload.projectId = selectedProject;
+                } else if (uploadDestination === "albums" && selectedAlbum) {
+                    payload.albumId = Number(selectedAlbum);
                 }
 
                 const res = await fetch('/api/media', {
@@ -351,7 +375,7 @@ export default function AdminDashboard() {
                     </div>
 
                     <nav className="flex-none p-2 md:p-4 flex md:flex-col overflow-x-auto snap-x space-x-2 md:space-x-0 md:space-y-2 hide-scrollbar">
-                        {["media", "categories", "project", "price"].map((tab) => (
+                        {["media", "categories", "project", "price", "albums"].map((tab) => (
                             <button
                                 key={tab}
                                 onClick={() => setActiveTab(tab as Tab)}
@@ -422,13 +446,19 @@ export default function AdminDashboard() {
                                                 >
                                                     Client Portal
                                                 </button>
+                                                <button
+                                                    onClick={() => setUploadDestination("albums")}
+                                                    className={`px-6 py-2 text-xs uppercase tracking-widest transition-colors ${uploadDestination === "albums" ? "bg-zinc-800 text-white" : "text-zinc-500 hover:text-white"}`}
+                                                >
+                                                    Albums
+                                                </button>
                                             </div>
                                         </div>
 
                                         {/* Conditional Dropdown */}
                                         <div className="flex flex-col gap-2 w-full md:w-auto flex-1">
                                             <label className="text-xs uppercase tracking-widest text-[#A1A1AA]">
-                                                {uploadDestination === "portfolio" ? "Select Category" : "Select Project Folder"}
+                                                {uploadDestination === "portfolio" ? "Select Category" : uploadDestination === "albums" ? "Select Album" : "Select Project Folder"}
                                             </label>
                                             {uploadDestination === "portfolio" ? (
                                                 <select
@@ -439,6 +469,17 @@ export default function AdminDashboard() {
                                                     <option value="">Ungrouped</option>
                                                     {categories.map(c => (
                                                         <option key={c.id} value={c.id}>{c.name}</option>
+                                                    ))}
+                                                </select>
+                                            ) : uploadDestination === "albums" ? (
+                                                <select
+                                                    value={selectedAlbum}
+                                                    onChange={(e) => setSelectedAlbum(e.target.value)}
+                                                    className="bg-[#000000] border border-zinc-800 text-white text-xs uppercase tracking-widest px-4 py-2.5 focus:outline-none focus:border-[#A1A1AA] w-full"
+                                                >
+                                                    <option value="">Ungrouped</option>
+                                                    {albums.map(a => (
+                                                        <option key={a.id} value={a.id}>{a.title}</option>
                                                     ))}
                                                 </select>
                                             ) : (
@@ -555,6 +596,73 @@ export default function AdminDashboard() {
                                             </div>
                                         ))}
                                     </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === "albums" && (
+                            <div className="animate-fade-in flex flex-col gap-6">
+                                <div className="flex justify-between items-center">
+                                    <div>
+                                        <h1 className="text-3xl font-light tracking-[0.2em] uppercase mb-2">Albums Manager</h1>
+                                        <p className="text-zinc-400 text-sm">Create and manage public albums / posts.</p>
+                                    </div>
+                                    <button
+                                        onClick={() => setIsAddingAlbum(!isAddingAlbum)}
+                                        className="bg-[#A1A1AA] text-black px-6 py-3 text-xs font-bold uppercase tracking-widest hover:bg-white transition-colors"
+                                    >
+                                        {isAddingAlbum ? "Cancel" : "Add New Album"}
+                                    </button>
+                                </div>
+                                {isAddingAlbum && (
+                                    <div className="border border-zinc-900 p-6 bg-zinc-900/30">
+                                        <form onSubmit={async (e) => {
+                                            e.preventDefault();
+                                            const res = await fetch('/api/albums', {
+                                                method: 'POST',
+                                                headers: { 'Content-Type': 'application/json' },
+                                                body: JSON.stringify({ ...albumForm })
+                                            });
+                                            if (res.ok) {
+                                                showToast("Album created");
+                                                setIsAddingAlbum(false);
+                                                setAlbumForm({});
+                                                fetchAlbums();
+                                            } else showToast("Failed to create album", "error");
+                                        }} className="grid gap-4">
+                                            <input className="bg-[#000000] border border-zinc-800 p-3 text-sm text-white focus:border-[#A1A1AA]" placeholder="Album Title" value={albumForm.title || ''} onChange={e => {
+                                                const title = e.target.value;
+                                                setAlbumForm({ ...albumForm, title, slug: title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') });
+                                            }} required />
+                                            <input className="bg-[#000000] border border-zinc-800 p-3 text-sm text-zinc-500 font-mono" placeholder="slug-name" value={albumForm.slug || ''} onChange={e => setAlbumForm({ ...albumForm, slug: e.target.value })} required />
+                                            <input className="bg-[#000000] border border-zinc-800 p-3 text-sm text-white" placeholder="Description (Optional)" value={albumForm.description || ''} onChange={e => setAlbumForm({ ...albumForm, description: e.target.value })} />
+                                            <input className="bg-[#000000] border border-zinc-800 p-3 text-sm text-white" placeholder="Date String e.g. Oct 2026" value={albumForm.date || ''} onChange={e => setAlbumForm({ ...albumForm, date: e.target.value })} />
+                                            <button className="bg-[#A1A1AA] text-black px-6 py-3 text-xs font-bold uppercase tracking-widest">Save Album</button>
+                                        </form>
+                                    </div>
+                                )}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    {albums.map(a => (
+                                        <div key={a.id} className="border border-zinc-900 p-6 bg-zinc-900/30 flex justify-between">
+                                            <div>
+                                                <h3 className="text-lg font-bold">{a.title}</h3>
+                                                <p className="text-xs text-zinc-500 font-mono">{a.slug} • {a.date}</p>
+                                                <p className="text-sm mt-2 text-zinc-400">{a.description}</p>
+                                                <div className="mt-4 flex gap-4">
+                                                    <span className={`text-xs uppercase ${a.is_published ? "text-[#A1A1AA]" : "text-zinc-600"}`}>
+                                                        {a.is_published ? "Published" : "Draft"}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div className="flex flex-col gap-2 items-end">
+                                                <button onClick={async () => {
+                                                    if (!confirm("Delete album?")) return;
+                                                    await fetch(`/api/albums?id=${a.id}`, { method: 'DELETE' });
+                                                    fetchAlbums();
+                                                }} className="text-xs uppercase text-red-500 hover:text-red-400 font-bold tracking-widest">DELETE</button>
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
                         )}
@@ -724,7 +832,7 @@ export default function AdminDashboard() {
                                             </div>
                                             <div>
                                                 <label className="block text-[10px] uppercase tracking-widest text-zinc-500 mb-1">Price ($)</label>
-                                                <input type="number" className="w-full bg-[#000000] border border-zinc-800 p-3 text-sm text-[#A1A1AA] focus:outline-none focus:border-[#A1A1AA]" placeholder="0.00" value={newServiceForm.price || ''} onChange={e => setNewServiceForm({ ...newServiceForm, price: parseFloat(e.target.value) || 0 })} />
+                                                <input type="number" className="w-full bg-[#000000] border border-zinc-800 p-3 text-sm text-[#A1A1AA] focus:outline-none focus:border-[#A1A1AA]" placeholder="0.00" value={newServiceForm.price === 0 ? '' : newServiceForm.price} onChange={e => setNewServiceForm({ ...newServiceForm, price: e.target.value === '' ? 0 : parseFloat(e.target.value) })} />
                                             </div>
                                         </div>
 
@@ -857,8 +965,8 @@ export default function AdminDashboard() {
                                                                     <input
                                                                         type="number"
                                                                         className="w-full bg-[#000000] border border-zinc-700 p-2 text-sm text-[#A1A1AA] font-mono focus:outline-none focus:border-[#A1A1AA]"
-                                                                        value={editForm.price || 0}
-                                                                        onChange={e => setEditForm({ ...editForm, price: parseFloat(e.target.value) })}
+                                                                        value={editForm.price === 0 ? '' : editForm.price}
+                                                                        onChange={e => setEditForm({ ...editForm, price: e.target.value === '' ? 0 : parseFloat(e.target.value) })}
                                                                     />
                                                                     <div className="mt-3">
                                                                         <label className="block text-[10px] uppercase tracking-widest text-zinc-600 mb-1">Status</label>

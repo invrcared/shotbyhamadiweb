@@ -1,0 +1,12 @@
+CREATE TABLE IF NOT EXISTS Albums (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    slug TEXT UNIQUE NOT NULL,
+    description TEXT,
+    cover_image_url TEXT,
+    date TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    is_published INTEGER DEFAULT 1
+);
+
+ALTER TABLE Media ADD COLUMN album_id INTEGER REFERENCES Albums(id) ON DELETE SET NULL;
