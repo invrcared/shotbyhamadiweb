@@ -33,7 +33,9 @@ export default async function ServicesPage() {
                     {results?.map((service: Service) => (
                         <div key={service.id} className="border border-zinc-900 p-8 hover:border-zinc-700 transition-colors bg-black">
                             <h2 className="text-2xl font-bold mb-2 tracking-wide">{service.title}</h2>
-                            <p className="text-xl text-[#A1A1AA] mb-4 font-light">${service.price}</p>
+                            <p className="text-xl text-[#A1A1AA] mb-4 font-light">
+                                {Number(service.price) > 0 ? `$${service.price}` : "Custom Quote"}
+                            </p>
                             <p className="text-zinc-400 mb-6 font-light">{service.description}</p>
                             <ul className="space-y-2">
                                 {JSON.parse(service.features || "[]").map((feature: string, idx: number) => (

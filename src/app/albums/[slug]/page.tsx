@@ -58,19 +58,27 @@ export default async function AlbumView({ params }: { params: Promise<{ slug: st
                     {images.map(img => {
                         const srcUrl = img.url.startsWith('http') ? img.url : `/api/preview?key=${encodeURIComponent(img.url)}`;
                         return (
-                            <div key={img.id} className="break-inside-avoid relative group overflow-hidden bg-zinc-900 border border-zinc-900/50">
+                            <div key={img.id} className="break-inside-avoid relative group overflow-hidden bg-zinc-900 border border-zinc-900/50" onContextMenu={(e) => e.preventDefault()}>
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
                                 <img
                                     src={srcUrl}
                                     alt={img.alt_text || "Album Photo"}
-                                    className="w-full h-auto object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500"
+                                    className="w-full h-auto object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none select-none"
                                     loading="lazy"
+                                    draggable={false}
                                 />
+                                <div className="absolute inset-0 bg-transparent z-10" />
                             </div>
                         );
                     })}
                 </div>
             )}
+
+            <footer className="mt-24 pt-10 border-t border-zinc-900/50 text-center z-10 relative">
+                <p className="text-[10px] text-zinc-600 uppercase tracking-[0.3em] font-medium">
+                    &copy; {new Date().getFullYear()} ShotByHamadi Media. All visuals protected by copyright.
+                </p>
+            </footer>
         </div>
     );
 }
