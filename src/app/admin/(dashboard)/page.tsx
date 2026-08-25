@@ -390,7 +390,10 @@ export default function AdminDashboard() {
                         ))}
                     </nav>
 
-                    <div className="hidden md:block p-4 border-t border-zinc-900/50 mt-auto">
+                    <div className="hidden md:block p-4 border-t border-zinc-900/50 mt-auto space-y-3">
+                        <Link href="/resources" className="text-xs text-zinc-500 hover:text-[#A1A1AA] transition-colors uppercase tracking-widest flex items-center gap-2">
+                            <span>🌐</span> External Resources
+                        </Link>
                         <Link href="/" className="text-xs text-zinc-500 hover:text-[#A1A1AA] transition-colors uppercase tracking-widest flex items-center">
                             ← Back to Site
                         </Link>
@@ -414,6 +417,25 @@ export default function AdminDashboard() {
                             <div className="border border-zinc-900 p-6 bg-[#000000]">
                                 <p className="text-zinc-500 text-xs uppercase tracking-widest mb-2">Storage Used (R2)</p>
                                 <p className="text-4xl font-light">{stats.storageUsed}</p>
+                            </div>
+                        </div>
+
+                        {/* External Resources Quick-Link */}
+                        <div className="mb-10">
+                            <div className="border border-zinc-900 p-6 bg-[#000000] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 hover:border-zinc-700 transition-colors duration-200">
+                                <div className="flex items-center gap-4">
+                                    <span className="text-3xl leading-none">🌐</span>
+                                    <div>
+                                        <h3 className="text-sm font-medium tracking-wide text-white mb-1">External Resources</h3>
+                                        <p className="text-zinc-400 text-xs">Access categorized external resources and available destinations.</p>
+                                    </div>
+                                </div>
+                                <Link
+                                    href="/resources"
+                                    className="flex-shrink-0 border border-zinc-800 text-[#A1A1AA] hover:bg-zinc-900 hover:border-zinc-600 hover:text-white transition-all duration-200 px-6 py-2.5 text-xs uppercase tracking-widest font-medium whitespace-nowrap"
+                                >
+                                    Open Resources →
+                                </Link>
                             </div>
                         </div>
 
