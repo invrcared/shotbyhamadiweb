@@ -77,7 +77,7 @@ export async function recordEngagement(
         // Get challenge from server
         const challengeRes = await fetch(`/api/albums/engage?albumId=${albumId}`);
         if (!challengeRes.ok) return { success: false };
-        const { challenge, difficulty } = await challengeRes.json();
+        const { challenge, difficulty } = (await challengeRes.json()) as { challenge: string; difficulty: number };
 
         // Solve proof-of-work
         const nonce = await solveChallenge(challenge, difficulty);
