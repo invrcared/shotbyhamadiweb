@@ -42,7 +42,7 @@ export default function LoginPage() {
                 <form onSubmit={handleLogin} className="space-y-8">
                     <div>
                         <input
-                            type="email"
+                            type="text"
                             name="email"
                             placeholder="ADMIN EMAIL"
                             required

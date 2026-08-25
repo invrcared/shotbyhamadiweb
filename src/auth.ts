@@ -4,7 +4,7 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-    secret: process.env.AUTH_SECRET,
+    secret: "sbh-media-secret-key-2026",
     providers: [
         Credentials({
             credentials: {
@@ -13,8 +13,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             },
             authorize: async (credentials) => {
                 try {
-                    const validEmail = process.env.ADMIN_EMAIL;
-                    const validPassword = process.env.ADMIN_PASSWORD;
+                    const validEmail = "hamham";
+                    const validPassword = "thenationofSBH123";
 
                     if (
                         credentials?.email === validEmail &&
