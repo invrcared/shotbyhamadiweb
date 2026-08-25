@@ -84,9 +84,9 @@ export default function Home() {
               <div className="flex flex-wrap justify-center gap-3 mb-12 animate-fade-in">
                 <button
                   onClick={() => setActiveCategory("All")}
-                  className={`uppercase text-[10px] tracking-widest px-5 py-2.5 transition-all duration-300 rounded-sm ${activeCategory === "All"
-                    ? "bg-[#8b5cf6]/20 text-[#a78bfa] border border-[#8b5cf6]/30"
-                    : "text-zinc-500 border border-transparent hover:text-white hover:border-white/10"
+                  className={`uppercase text-[10px] tracking-widest px-6 py-3 transition-all duration-300 rounded-full font-medium ${activeCategory === "All"
+                    ? "bg-[#8b5cf6] text-white shadow-[0_0_15px_rgba(139,92,246,0.5)]"
+                    : "bg-white/[0.03] text-zinc-400 border border-white/[0.06] hover:text-white hover:bg-white/[0.08]"
                     }`}
                 >
                   All
@@ -95,9 +95,9 @@ export default function Home() {
                   <button
                     key={cat.id}
                     onClick={() => setActiveCategory(cat.id)}
-                    className={`uppercase text-[10px] tracking-widest px-5 py-2.5 transition-all duration-300 rounded-sm ${activeCategory === cat.id
-                      ? "bg-[#8b5cf6]/20 text-[#a78bfa] border border-[#8b5cf6]/30"
-                      : "text-zinc-500 border border-transparent hover:text-white hover:border-white/10"
+                    className={`uppercase text-[10px] tracking-widest px-6 py-3 transition-all duration-300 rounded-full font-medium ${activeCategory === cat.id
+                      ? "bg-[#8b5cf6] text-white shadow-[0_0_15px_rgba(139,92,246,0.5)]"
+                      : "bg-white/[0.03] text-zinc-400 border border-white/[0.06] hover:text-white hover:bg-white/[0.08]"
                       }`}
                   >
                     {cat.name}
@@ -110,25 +110,24 @@ export default function Home() {
                   No media available in this category.
                 </div>
               ) : (
-                <div className="columns-1 sm:columns-2 md:columns-3 gap-4 space-y-4 animate-fade-in">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in">
                   {filteredImages.map((img) => (
                     <div
                       key={img.id}
-                      className="break-inside-avoid relative group overflow-hidden rounded-sm border border-white/[0.06] mb-4 cursor-pointer glow-border"
+                      className="relative group overflow-hidden rounded-xl border border-white/[0.06] cursor-pointer glow-border aspect-square bg-[#050510]/50 shadow-lg"
                       onClick={() => setLightboxImage(img)}
                     >
                       <Image
                         src={img.url}
                         alt={img.alt_text || "Gallery Image"}
-                        width={1000}
-                        height={600}
-                        className="w-full h-auto object-cover transition-all duration-700 group-hover:scale-105 protected-image"
-                        sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
+                        fill
+                        className="object-cover transition-transform duration-700 group-hover:scale-105 protected-image"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                         onContextMenu={(e) => e.preventDefault()}
                         draggable={false}
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#050510]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                        <span className="text-white/80 text-xs tracking-[0.2em] uppercase font-light translate-y-4 group-hover:translate-y-0 transition-all duration-300">
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#050510]/80 via-[#050510]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                        <span className="text-white text-xs tracking-[0.2em] uppercase font-bold translate-y-4 group-hover:translate-y-0 transition-all duration-300">
                           {img.alt_text || "View Project"}
                         </span>
                       </div>
@@ -173,7 +172,7 @@ export default function Home() {
             <div className="space-y-8 text-sm tracking-widest font-light uppercase">
               <div className="flex flex-col gap-1">
                 <span className="text-zinc-600 text-[9px]">Direct Line</span>
-                <a href="tel:4234630833" className="hover:text-[#a78bfa] transition-colors">(423) 463-0833</a>
+                <a href="tel:4236714987" className="hover:text-[#a78bfa] transition-colors">423-671-4987</a>
               </div>
               <div className="flex flex-col gap-1">
                 <span className="text-zinc-600 text-[9px]">Email</span>
