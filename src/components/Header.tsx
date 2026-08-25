@@ -43,8 +43,8 @@ export default function Header() {
 
     return (
         <>
-            <header className="fixed top-0 left-0 right-0 z-[100] w-full transition-all duration-300">
-                <div className="flex items-center justify-between md:justify-center md:gap-10 bg-[#050510]/95 border-b border-white/[0.06] px-6 md:px-10 py-3 md:py-4">
+            <header className="fixed top-0 left-0 right-0 z-[100] w-full">
+                <div className="flex items-center justify-between md:justify-center md:gap-10 bg-[#050510] border-b border-white/10 px-6 md:px-10 py-4 md:py-5">
                     
                     {/* Mobile View: Logo & Hamburger */}
                     <div className="md:hidden flex items-center justify-between w-full">
