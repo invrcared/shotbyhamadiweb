@@ -35,7 +35,7 @@ export default function Header() {
             >
                 {link.label}
                 {isActive && (
-                    <span className="absolute -bottom-1 left-0 right-0 h-[2px] bg-gradient-to-r from-[#8b5cf6] to-[#6366f1] rounded-full" />
+                    <span className="absolute -bottom-1 left-0 right-0 h-[2px] bg-gradient-to-r from-[#8b5cf6] to-[#6366f1]" />
                 )}
             </Link>
         );
@@ -43,9 +43,9 @@ export default function Header() {
 
     return (
         <>
-            <header className="fixed top-6 left-1/2 -translate-x-1/2 z-[100] w-full max-w-[90%] md:max-w-2xl lg:max-w-3xl transition-all duration-300">
-                <div className="flex items-center justify-between md:justify-center md:gap-10 bg-[#050510]/70 backdrop-blur-xl border border-white/[0.08] shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] px-6 md:px-10 py-3 md:py-4" style={{ borderRadius: '9999px' }}>
-
+            <header className="fixed top-0 left-0 right-0 z-[100] w-full transition-all duration-300">
+                <div className="flex items-center justify-between md:justify-center md:gap-10 bg-[#050510]/95 border-b border-white/[0.06] px-6 md:px-10 py-3 md:py-4">
+                    
                     {/* Mobile View: Logo & Hamburger */}
                     <div className="md:hidden flex items-center justify-between w-full">
                         <Link href="/" className="flex items-center group" onClick={() => setIsMobileMenuOpen(false)}>
@@ -70,7 +70,6 @@ export default function Header() {
                     {/* Desktop View: Center Logo */}
                     <Link href="/" className="hidden md:flex items-center group relative shrink-0 mx-2">
                         <Image src="/white-transparent.png" alt="ShotByHamadi Logo" width={130} height={35} className="object-contain opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300" />
-                        <div className="absolute inset-0 bg-white/5 rounded-full filter blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                     </Link>
 
                     {/* Desktop View: Right Links */}
