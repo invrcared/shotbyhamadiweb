@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { resourceCategories, ResourceCategory } from "./data";
 
@@ -274,20 +274,14 @@ function ResourceSearch({ value, onChange, totalResources, totalCategories }: Re
 
 // ─── ResourceDashboard (main page) ────────────────────────────────────────────
 export default function ResourceDashboard() {
-    const [unlocked, setUnlocked] = useState(false);
+    const [unlocked, setUnlocked] = useState(() => {
+        if (typeof window !== "undefined") {
+            return sessionStorage.getItem(SESSION_KEY) === "1";
+        }
+        return false;
+    });
     const [searchQuery, setSearchQuery] = useState("");
     const [activeFilter, setActiveFilter] = useState("all");
-
-    // Persist unlock across re-renders (but not across browser sessions)
-    useEffect(() => {
-        if (sessionStorage.getItem(SESSION_KEY) === "1") {
-            setUnlocked(true);
-        }
-    }, []);
-
-    if (!unlocked) {
-        return <ResourcePasswordGate onUnlock={() => setUnlocked(true)} />;
-    }
 
     const totalResources = useMemo(
         () => resourceCategories.reduce((acc, cat) => acc + cat.urls.filter(isSafeUrl).length, 0),
@@ -329,6 +323,10 @@ export default function ResourceDashboard() {
     }, [searchQuery, activeFilter]);
 
     const isSearching = searchQuery.trim().length > 0;
+
+    if (!unlocked) {
+        return <ResourcePasswordGate onUnlock={() => setUnlocked(true)} />;
+    }
 
     return (
         <div className="min-h-screen bg-[#000000] text-white selection:bg-[#A1A1AA] selection:text-black font-sans">
