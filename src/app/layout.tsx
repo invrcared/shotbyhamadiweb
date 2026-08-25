@@ -1,11 +1,16 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 
 export const runtime = "edge";
 
 const inter = Inter({
   variable: "--font-inter",
+  subsets: ["latin"],
+});
+
+const outfit = Outfit({
+  variable: "--font-outfit",
   subsets: ["latin"],
 });
 
@@ -34,9 +39,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} font-sans antialiased text-white bg-black`}>
-        <Header />
-        {children}
+      <body className={`${inter.variable} ${outfit.variable} font-sans antialiased text-white bg-[#050510]`}>
+        {/* Starfield Background */}
+        <div id="starfield" aria-hidden="true">
+          <div className="stars-layer stars-sm" />
+          <div className="stars-layer stars-md" />
+          <div className="stars-layer stars-lg" />
+        </div>
+        <div className="relative z-10">
+          <Header />
+          {children}
+        </div>
       </body>
     </html>
   );

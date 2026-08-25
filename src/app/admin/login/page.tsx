@@ -26,39 +26,43 @@ export default function LoginPage() {
             setError("Invalid credentials. Access denied.");
             setLoading(false);
         } else {
-            // Successful login — navigate to admin dashboard
             window.location.href = "/admin";
         }
     }
 
     return (
-        <div className="min-h-screen bg-[#000000] flex items-center justify-center p-6 selection:bg-[#A1A1AA] selection:text-black font-sans">
-            <div className="w-full max-w-sm border border-zinc-900 p-8 shadow-2xl shadow-black/50">
+        <div className="min-h-screen flex items-center justify-center p-6 font-sans">
+            <div className="w-full max-w-sm glass rounded-xl p-8 shadow-2xl shadow-black/50">
                 <div className="text-center mb-10">
-                    <h1 className="text-2xl font-light tracking-[0.3em] uppercase text-white mb-2">System Access</h1>
-                    <p className="text-[#A1A1AA] text-[9px] tracking-[0.4em] uppercase">ShotByHamadi Media</p>
+                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#8b5cf6]/20 flex items-center justify-center">
+                        <svg className="w-7 h-7 text-[#a78bfa]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                        </svg>
+                    </div>
+                    <h1 className="text-2xl font-[var(--font-outfit)] font-light tracking-[0.2em] uppercase text-white mb-2">System Access</h1>
+                    <p className="text-zinc-500 text-[9px] tracking-[0.4em] uppercase">ShotByHamadi Media</p>
                 </div>
 
-                <form onSubmit={handleLogin} className="space-y-8">
-                    <div>
+                <form onSubmit={handleLogin} className="space-y-6">
+                    <div className="space-y-4">
                         <input
                             type="text"
                             name="email"
-                            placeholder="ADMIN EMAIL"
+                            placeholder="USERNAME"
                             required
-                            className="w-full bg-transparent border-b border-zinc-900 px-4 py-3 text-center text-xs tracking-widest text-white placeholder-zinc-800 focus:outline-none focus:border-[#A1A1AA] transition-all duration-300 mb-6"
+                            className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3.5 text-center text-xs tracking-widest text-white placeholder-zinc-700 focus:outline-none focus:border-[#8b5cf6]/50 transition-all duration-300"
                         />
                         <input
                             type="password"
                             name="password"
                             placeholder="ENTER SECURE KEY"
                             required
-                            className="w-full bg-transparent border-b border-zinc-900 px-4 py-3 text-center text-xs tracking-widest text-white placeholder-zinc-800 focus:outline-none focus:border-[#A1A1AA] transition-all duration-300"
+                            className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-4 py-3.5 text-center text-xs tracking-widest text-white placeholder-zinc-700 focus:outline-none focus:border-[#8b5cf6]/50 transition-all duration-300"
                         />
                     </div>
 
                     {error && (
-                        <p className="text-red-500 text-[10px] uppercase tracking-widest text-center mt-2 font-bold">
+                        <p className="text-red-400 text-[10px] uppercase tracking-widest text-center font-bold animate-fade-in">
                             {error}
                         </p>
                     )}
@@ -66,7 +70,7 @@ export default function LoginPage() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-[#A1A1AA] text-black py-4 text-xs font-bold uppercase tracking-[0.2em] hover:bg-white transition-colors duration-300 border border-transparent hover:border-white shadow-lg disabled:opacity-50 disabled:cursor-wait"
+                        className="w-full btn-gradient py-4 text-xs font-bold uppercase tracking-[0.2em] rounded-lg shadow-lg disabled:opacity-50 disabled:cursor-wait transition-all"
                     >
                         {loading ? "Authenticating..." : "Authenticate"}
                     </button>

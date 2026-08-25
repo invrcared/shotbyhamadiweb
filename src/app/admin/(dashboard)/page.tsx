@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
 
 type Tab = "media" | "project" | "price" | "categories" | "albums";
 
@@ -346,30 +345,29 @@ export default function AdminDashboard() {
     };
 
     if (!mounted) {
-        return <div className="min-h-screen bg-[#000000] text-[#A1A1AA] flex items-center justify-center tracking-widest uppercase text-xs">Loading Secure Dashboard...</div>;
+        return <div className="min-h-screen text-[#a78bfa] flex items-center justify-center tracking-widest uppercase text-xs"><span className="animate-pulse">Loading Secure Dashboard...</span></div>;
     }
 
-    return (
-        <div className="min-h-screen bg-[#000000] text-white selection:bg-[#A1A1AA] selection:text-black font-sans">
+    return <div className="min-h-screen text-white selection:bg-[#8b5cf6]/30 selection:text-white font-sans">
             {/* Toast Notification */}
             {toast && (
-                <div className={`fixed bottom-6 right-6 z-50 flex items-center gap-3 px-5 py-4 border text-xs tracking-widest uppercase font-bold shadow-2xl transition-all duration-300 ${toast.type === "success"
-                    ? "bg-zinc-900 border-[#A1A1AA] text-white"
-                    : "bg-zinc-900 border-red-700 text-red-400"
+                <div className={`fixed bottom-6 right-6 z-50 flex items-center gap-3 px-5 py-4 border text-xs tracking-widest uppercase font-bold shadow-2xl transition-all duration-300 rounded-lg glass ${toast.type === "success"
+                    ? "border-[#8b5cf6]/40 text-white"
+                    : "border-red-700/40 text-red-400"
                     }`}>
-                    <span className={toast.type === "success" ? "text-[#A1A1AA]" : "text-red-500"}>■</span>
+                    <span className={toast.type === "success" ? "text-[#a78bfa]" : "text-red-500"}>■</span>
                     {toast.message}
                 </div>
             )}
             <div className="flex flex-col md:flex-row min-h-screen">
                 {/* Sidebar / Top Nav on Mobile */}
-                <aside className="w-full md:w-64 border-b md:border-b-0 md:border-r border-zinc-900/50 flex flex-col bg-[#000000] sticky top-0 md:static z-50">
-                    <div className="p-4 md:p-6 border-b border-zinc-900/50 flex justify-between items-center md:items-start md:flex-col">
+                <aside className="w-full md:w-64 border-b md:border-b-0 md:border-r border-white/[0.06] flex flex-col bg-[#050510]/80 backdrop-blur-xl sticky top-0 md:static z-50">
+                    <div className="p-4 md:p-6 border-b border-white/[0.06] flex justify-between items-center md:items-start md:flex-col">
                         <div>
                             <h2 className="text-base md:text-lg font-light tracking-[0.2em] uppercase mb-1">Admin Portal</h2>
-                            <p className="text-zinc-500 text-[10px] md:text-xs tracking-widest uppercase">ShotByHamadi</p>
+                            <p className="text-[#a78bfa] text-[10px] md:text-xs tracking-widest uppercase">ShotByHamadi</p>
                         </div>
-                        <Link href="/" className="md:hidden text-[10px] text-zinc-500 hover:text-[#A1A1AA] transition-colors uppercase tracking-widest border border-zinc-800 px-3 py-1.5 rounded-sm">
+                        <Link href="/" className="md:hidden text-[10px] text-zinc-500 hover:text-[#a78bfa] transition-colors uppercase tracking-widest border border-white/[0.06] px-3 py-1.5 rounded-lg">
                             Exit
                         </Link>
                     </div>
@@ -379,52 +377,54 @@ export default function AdminDashboard() {
                             <button
                                 key={tab}
                                 onClick={() => setActiveTab(tab as Tab)}
-                                className={`flex-shrink-0 md:w-full flex items-center px-4 py-3 text-xs md:text-sm font-medium rounded-sm transition-colors border snap-start whitespace-nowrap ${activeTab === tab
-                                    ? "bg-zinc-900 text-white border-zinc-800"
-                                    : "text-zinc-400 border-transparent hover:text-white hover:bg-zinc-900/50"
+                                className={`flex-shrink-0 md:w-full flex items-center px-4 py-3 text-xs md:text-sm font-medium rounded-lg transition-all border snap-start whitespace-nowrap ${activeTab === tab
+                                    ? "bg-[#8b5cf6]/15 text-white border-[#8b5cf6]/30"
+                                    : "text-zinc-400 border-transparent hover:text-white hover:bg-white/[0.03]"
                                     }`}
                             >
-                                <span className={`${activeTab === tab ? "text-[#A1A1AA]" : "text-zinc-600"} mr-3`}>■</span>
+                                <span className={`${activeTab === tab ? "text-[#a78bfa]" : "text-zinc-600"} mr-3`}>■</span>
                                 {tab.charAt(0).toUpperCase() + tab.slice(1)} Manager
                             </button>
                         ))}
                     </nav>
 
-                    <div className="hidden md:block p-4 border-t border-zinc-900/50 mt-auto space-y-3">
-                        <Link href="/resources" className="text-xs text-zinc-500 hover:text-[#A1A1AA] transition-colors uppercase tracking-widest flex items-center gap-2">
+                    <div className="hidden md:block p-4 border-t border-white/[0.06] mt-auto space-y-3">
+                        <Link href="/resources" className="text-xs text-zinc-500 hover:text-[#a78bfa] transition-colors uppercase tracking-widest flex items-center gap-2">
                             <span>🌐</span> External Resources
                         </Link>
-                        <Link href="/" className="text-xs text-zinc-500 hover:text-[#A1A1AA] transition-colors uppercase tracking-widest flex items-center">
+                        <Link href="/" className="text-xs text-zinc-500 hover:text-[#a78bfa] transition-colors uppercase tracking-widest flex items-center">
                             ← Back to Site
                         </Link>
                     </div>
                 </aside>
 
                 {/* Main Content */}
-                <main className="flex-1 overflow-auto bg-[#000000] w-full max-w-[100vw]">
+                <main className="flex-1 overflow-auto w-full max-w-[100vw]">
                     <div className="p-4 md:p-10 max-w-5xl mx-auto w-full">
 
                         {/* Stats Section (Global) */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 h-32">
-                            <div className="border border-zinc-900 p-6 bg-[#000000]">
+                            <div className="glass rounded-xl p-6">
                                 <p className="text-zinc-500 text-xs uppercase tracking-widest mb-2">Total Media</p>
-                                <p className="text-4xl font-light">{stats.totalMedia}</p>
+                                <p className="text-4xl font-light gradient-text">{stats.totalMedia}</p>
                             </div>
-                            <div className="border border-zinc-900 p-6 bg-[#000000]">
+                            <div className="glass rounded-xl p-6">
                                 <p className="text-zinc-500 text-xs uppercase tracking-widest mb-2">Active Projects</p>
-                                <p className="text-4xl font-light">{stats.activeProjects}</p>
+                                <p className="text-4xl font-light gradient-text">{stats.activeProjects}</p>
                             </div>
-                            <div className="border border-zinc-900 p-6 bg-[#000000]">
+                            <div className="glass rounded-xl p-6">
                                 <p className="text-zinc-500 text-xs uppercase tracking-widest mb-2">Storage Used (R2)</p>
-                                <p className="text-4xl font-light">{stats.storageUsed}</p>
+                                <p className="text-4xl font-light gradient-text">{stats.storageUsed}</p>
                             </div>
                         </div>
 
                         {/* External Resources Quick-Link */}
                         <div className="mb-10">
-                            <div className="border border-zinc-900 p-6 bg-[#000000] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 hover:border-zinc-700 transition-colors duration-200">
+                            <div className="glass rounded-xl p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 glow-border transition-all duration-200">
                                 <div className="flex items-center gap-4">
-                                    <span className="text-3xl leading-none">🌐</span>
+                                    <div className="w-12 h-12 rounded-xl bg-[#8b5cf6]/20 flex items-center justify-center flex-shrink-0">
+                                        <span className="text-2xl leading-none">🌐</span>
+                                    </div>
                                     <div>
                                         <h3 className="text-sm font-medium tracking-wide text-white mb-1">External Resources</h3>
                                         <p className="text-zinc-400 text-xs">Access categorized external resources and available destinations.</p>
@@ -432,7 +432,7 @@ export default function AdminDashboard() {
                                 </div>
                                 <Link
                                     href="/resources"
-                                    className="flex-shrink-0 border border-zinc-800 text-[#A1A1AA] hover:bg-zinc-900 hover:border-zinc-600 hover:text-white transition-all duration-200 px-6 py-2.5 text-xs uppercase tracking-widest font-medium whitespace-nowrap"
+                                    className="flex-shrink-0 btn-outline-glow px-6 py-2.5 text-xs uppercase tracking-widest font-medium whitespace-nowrap rounded-lg"
                                 >
                                     Open Resources →
                                 </Link>
