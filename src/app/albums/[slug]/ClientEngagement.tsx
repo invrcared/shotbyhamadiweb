@@ -23,6 +23,7 @@ export default function ClientEngagement({
         try {
             const likedAlbums = JSON.parse(localStorage.getItem('sbh_liked_albums') || '{}');
             if (likedAlbums[albumId]) {
+                // eslint-disable-next-line react-hooks/set-state-in-effect
                 setIsLiked(true);
             }
         } catch { }
