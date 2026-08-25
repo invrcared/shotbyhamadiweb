@@ -348,7 +348,8 @@ export default function AdminDashboard() {
         return <div className="min-h-screen text-[#a78bfa] flex items-center justify-center tracking-widest uppercase text-xs"><span className="animate-pulse">Loading Secure Dashboard...</span></div>;
     }
 
-    return <div className="min-h-screen text-white selection:bg-[#8b5cf6]/30 selection:text-white font-sans">
+    return (
+        <div className="min-h-screen text-white selection:bg-[#8b5cf6]/30 selection:text-white font-sans">
             {/* Toast Notification */}
             {toast && (
                 <div className={`fixed bottom-6 right-6 z-50 flex items-center gap-3 px-5 py-4 border text-xs tracking-widest uppercase font-bold shadow-2xl transition-all duration-300 rounded-lg glass ${toast.type === "success"
