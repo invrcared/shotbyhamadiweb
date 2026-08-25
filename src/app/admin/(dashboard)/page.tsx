@@ -19,6 +19,8 @@ interface Album {
     cover_image_url: string;
     date: string;
     is_published: number;
+    view_count: number;
+    like_count: number;
 }
 
 interface MediaItem {
@@ -672,10 +674,13 @@ export default function AdminDashboard() {
                                                 <h3 className="text-lg font-bold">{a.title}</h3>
                                                 <p className="text-xs text-zinc-500 font-mono">{a.slug} • {a.date}</p>
                                                 <p className="text-sm mt-2 text-zinc-400">{a.description}</p>
-                                                <div className="mt-4 flex gap-4">
+                                                <div className="mt-4 flex gap-4 items-center">
                                                     <span className={`text-xs uppercase ${a.is_published ? "text-[#A1A1AA]" : "text-zinc-600"}`}>
                                                         {a.is_published ? "Published" : "Draft"}
                                                     </span>
+                                                    <span className="text-zinc-700">•</span>
+                                                    <span className="text-xs text-zinc-500 flex items-center gap-1">👁 {a.view_count || 0}</span>
+                                                    <span className="text-xs text-zinc-500 flex items-center gap-1">♥ {a.like_count || 0}</span>
                                                 </div>
                                             </div>
                                             <div className="flex flex-col gap-2 items-end">

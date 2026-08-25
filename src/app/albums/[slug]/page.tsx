@@ -1,6 +1,7 @@
 import { getRequestContext } from "@cloudflare/next-on-pages";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import ClientEngagement from "./ClientEngagement";
 
 export const runtime = "edge";
 
@@ -10,6 +11,8 @@ interface Album {
     slug: string;
     description: string;
     date: string;
+    view_count: number;
+    like_count: number;
 }
 
 interface MediaItem {
@@ -41,6 +44,13 @@ export default async function AlbumView({ params }: { params: Promise<{ slug: st
                 <h1 className="text-3xl md:text-5xl lg:text-7xl font-[var(--font-outfit)] font-light tracking-wide mb-6 gradient-text">{album.title || "Untitled Album"}</h1>
                 <div className="flex flex-col md:flex-row md:items-center gap-4 text-xs tracking-widest uppercase text-zinc-500 mb-8 font-mono">
                     <span>{album.date || ""}</span>
+                    
+                    {/* Interactive View & Like Component */}
+                    <ClientEngagement 
+                        albumId={album.id} 
+                        initialViewCount={album.view_count || 0} 
+                        initialLikeCount={album.like_count || 0} 
+                    />
                 </div>
                 {album.description && (
                     <p className="text-base md:text-lg text-zinc-400 leading-relaxed max-w-3xl">
