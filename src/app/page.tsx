@@ -48,7 +48,7 @@ export default function Home() {
   return (
     <div className="min-h-screen text-white selection:bg-[#8b5cf6]/30 selection:text-white font-sans">
 
-      <main className="flex-grow flex flex-col justify-start items-center text-center px-6 pt-28 pb-24">
+      <main className="flex-grow flex flex-col justify-start items-center text-center px-6 pt-16 pb-24">
         {/* Hero Section */}
         <div className="mb-20 flex flex-col items-center w-full animate-fade-in">
           <h1 className="text-4xl md:text-6xl font-[var(--font-outfit)] font-light tracking-[0.2em] uppercase mb-6 leading-tight gradient-text">
